@@ -4,7 +4,7 @@
 
 Lending Club is a peer to peer lending platform that emerged in 2007. The platform allows individuals to review loan applications from others and evaluate a variety of inputs and then based on one's conclusions, the individual can commit a designated dollar amount to the applicants. Lending Club provides an API to download information about all historical loans on the platform. 
 
-For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,848 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
+For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,781 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
 
 ## Objective
 
@@ -27,16 +27,16 @@ Below is a simple breakdown of the total loans in the dataset.
 |                                                     |                 |         | 
 |-----------------------------------------------------|-----------------|---------| 
 | Status                                              | Number of Loans | Percent | 
-| Fully Paid                                          | 1191125         | 50%     | 
-| Current                                             | 868848          | 36%     | 
-| Charged Off                                         | 287174          | 12%     | 
-| Late (31-120 days)                                  | 20775           | 1%      | 
-| In Grace Period                                     | 9242            | 0%      | 
-| Late (16-30 days)                                   | 4826            | 0%      | 
-| Does not meet the credit policy. Status:Fully Paid  | 1988            | 0%      | 
-| Does not meet the credit policy. Status:Charged Off | 761             | 0%      | 
-| Default                                             | 42              | 0%      | 
-| Total                                               | 2384781         | 100%    | 
+| Fully Paid                                          | 1,191,125       | 50%     | 
+| Current                                             |   868,848       | 36%     | 
+| Charged Off                                         |   287,174       | 12%     | 
+| Late (31-120 days)                                  |    20,775       | 1%      | 
+| In Grace Period                                     |     9,242       | 0%      | 
+| Late (16-30 days)                                   |     4,826       | 0%      | 
+| Does not meet the credit policy. Status:Fully Paid  |     1,988       | 0%      | 
+| Does not meet the credit policy. Status:Charged Off |       761       | 0%      | 
+| Default                                             |        42       | 0%      | 
+| Total                                               | 2,384,781       | 100%    | 
 
 
 ## Critera
