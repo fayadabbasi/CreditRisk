@@ -112,6 +112,7 @@ Classification Report - Threshold of 0.7 and 13 features
 | 1         | 0.88      | 0.96   | 0.92      | 502,873  | 
 | avg/total | 0.82      | 0.85   | 0.83      | 578,627  | 
 
+![alt text](https://github.com/fayadabbasi/CreditRisk/raw/master/ROC images/ROC Logistic Regression 13 factors.png "Logistic Regression ROC Curve w 13 features")
 
 #### Comments
 
