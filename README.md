@@ -65,5 +65,188 @@ Next, I one hot encoded all categorical values. This included: grade, home owner
 
 I next created a weight of evidence table for the continuous variables remaining. Weight of evidence is a standard methodology used in the credit industry. Weight of evidence is the log of % good divided by log % bad. By binning the continuous variables and then bucketing them based on their weight of evidence score, I can create relevant binary categories for each feature. For example, by evaluating a number of bin quantities for interest rate (ranging from 20 to 300), I can determine where I get a reasonable breakdown of counts and clustering of weight of evidence scores. If I determine that there is a large clustering of weight of evidence between 10% and 17% interest rate but then see a spike up, I can bin all rates between 10 and 17% together and create a separate bin for the next cluster. I did this for the following categories: loan amount, annual income, interest rate, revolver utilization, open credit (open acc), first three digits of zip code, and total current balance. 
 
+After completing this process, I had 98 categories to evaluate on, all of which were one hot encoded. 
 
+## Results of Model
+
+#### Logistic Regression Model
+AUROC - 0.6999 using 10 features and 0.7016 using 13 features. 
+_Note: I will show data going forward only with 13 features_ 
+
+Confusion Matrix - Threshold of 0.5 and 13 features
+
+|           |      |         | 
+|-----------|------|---------| 
+| Predicted |  0   | 1       | 
+| Actual    |      |         | 
+| 0         |  769 | 74,985  | 
+| 1         |  852 | 502,021 | 
+|           | 1,621| 577,006 |
+
+Classification Report - Threshold of 0.5 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.47      | 0.01   | 0.02      | 75,754   | 
+| 1         | 0.87      | 1      | 0.93      | 502,873  | 
+| avg/total | 0.82      | 0.87   | 0.81      | 578,627  | 
+
+
+Confusion Matrix - Threshold of 0.7 and 13 features
+
+|           |        |         | 
+|-----------|--------|---------| 
+| Predicted | 0      | 1       | 
+| Actual    |        |         | 
+| 0         | 12,650 | 63,104  | 
+| 1         | 22,380 | 480,493 | 
+|           | 35,030 | 543,597 | 
+
+Classification Report - Threshold of 0.7 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.36      | 0.17   | 0.23      | 75,754   | 
+| 1         | 0.88      | 0.96   | 0.92      | 502,873  | 
+| avg/total | 0.82      | 0.85   | 0.83      | 578,627  | 
+
+
+#### Comments
+
+The logistic regression model turned out to have the best AUCROC score of all the models I used. That said, just using 0.5 for the logistic regression threshold, I did not see good performance on the recall of the model. The model largely defaulted to scoring almost everthing as a good loan, as evidenced by predicting only 0.28% of all loans as bad versus actual of 13.1%. Incidentally, using a threshold of 0.50 for all four models resulted in very low recall scores for all but the models, with bad loan recalls ranging from 0.0% to 0.4%. By increasing the threshold to 0.7, I get a better balance, as seen by the prediction increasing to 6.05% 
+
+### Random Forest - Default Class Weighting
+AUROC - 0.667 using 13 features. 
+
+Confusion Matrix - Threshold of 0.5 and 13 features
+
+|           |       |         | 
+|-----------|-------|---------| 
+| Predicted | 0     | 1       | 
+| Actual    |       |         | 
+| 0         | 1,595 | 74,159  | 
+| 1         | 2,729 | 500,144 | 
+|           | 4,324 | 574,303 | 
+
+Classification Report - Threshold of 0.5 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.37      | 0.02   | 0.04      | 75,754   | 
+| 1         | 0.87      | 0.99   | 0.93      | 502,873  | 
+| avg/total | 0.81      | 0.87   | 0.81      | 578,627  | 
+
+Confusion Matrix - Threshold of 0.7 and 13 features
+
+|           |        |         | 
+|-----------|--------|---------| 
+| Predicted | 0      | 1       | 
+| Actual    |        |         | 
+| 0         | 15,877 | 59,877  | 
+| 1         | 39,081 | 463,792 | 
+|           | 54,958 | 523,669 | 
+
+
+Classification Report - Threshold of 0.7 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.29      | 0.21   | 0.24      | 75,754   | 
+| 1         | 0.89      | 0.92   | 0.9       | 502,873  | 
+| avg/total | 0.81      | 0.83   | 0.82      | 578,627  | 
+
+
+While the AUROC score is lower, the basic threshold evaluation of the Random Forest model captures more of the actual bad loans although still pretty poor. Predicting 2% of actual bad loans, as evidenced by the recall score, is not too helpful and barely better than 1% from the logistic regression model. At 0.7 threshold, I capture 21% of the actual bad loans. 
+
+## Random Forest with 10:1 class weighting bad:good
+AUROC at 0.6485 for 13 features
+
+Confusion Matrix - Threshold of 0.5 and 13 features
+
+|           |        |         | 
+|-----------|--------|---------| 
+| Predicted | 0      | 1       | 
+| Actual    |        |         | 
+| 0         | 2,731  | 73,023  | 
+| 1         | 7,493  | 495,380 | 
+|           | 10,224 | 568,403 | 
+
+
+Classification Report - Threshold of 0.5 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.27      | 0.04   | 0.06      | 75,754   | 
+| 1         | 0.87      | 0.99   | 0.92      | 502,873  | 
+| avg/total | 0.79      | 0.86   | 0.81      | 578,627  | 
+
+
+
+Confusion Matrix - Threshold of 0.7 and 13 features
+
+|           |        |         | 
+|-----------|--------|---------| 
+| Predicted | 0      | 1       | 
+| Actual    |        |         | 
+| 0         | 18,340 | 57,414  | 
+| 1         | 60,261 | 442,612 | 
+|           | 78,601 | 500,026 | 
+
+
+Classification Report - Threshold of 0.7 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+| x         | Precision | Recall | f-1 score | support  | 
+| 0         | 0.23      | 0.24   | 0.24      | 75,754   | 
+| 1         | 0.89      | 0.88   | 0.88      | 502,873  | 
+| avg/total | 0.80      | 0.80   | 0.80      | 578,627  | 
+
+### Comments 
+
+Again, there is a similar theme - as we try to improve prediction of bad loans, we inevitable see a trade-off on opportunity cost. Looking at the confusion matrix, for 0.7 threshold on the random forest imbalance, I have lowered my false positives but dramatically increased my true negatives. My combined f-1 scores also seem to be in the 0.80-0.83 range through all the reports so far. 
+
+### Gradient Boosted Model
+AUROC score of 0.6765
+
+Confusion Matrix - Threshold of 0.5 and 13 features
+
+|           |        |         | 
+|-----------|--------|---------| 
+| Predicted | 0      | 1       | 
+| Actual    |        |         | 
+| 0         |      0 | 75,754  | 
+| 1         |      0 | 502,873 | 
+|           |      0 | 578,627 | 
+
+
+Classification Report - Threshold of 0.5 and 13 features
+
+|           |           |        |           |          | 
+|-----------|-----------|--------|-----------|----------| 
+|           | Precision | Recall | f-1 score | support  | 
+| 0         | 0.00      | 0.00   | 0.00      | 75,754   | 
+| 1         | 0.87      | 1.00   | 0.93      | 502,873  | 
+| avg/total | 0.76      | 0.87   | 0.81      | 578,627  | 
+
+### Comments
+
+Well, why not... The gradient boosted model clearly needs some additional parameter tuning. Given the time it takes to run the model, it will probably be best to leverage some faster processing capacity with AWS EC2. 
+
+## Conclusions
+
+Overall, this is not going to make you rich. The models appear to struggle to capture actual bad loans by defaulting to optimizing the number of good loans. 
+
+Areas to consider for future iterations:
+
+* The additional of 3 features had minimal impact on the logistic regression model but perhaps other features could result in better enhancements. 
+
+* Running the non categorical data directly on the random forest and gradient boosted models may allow the models to determine better splits and thus better predictability than the one hot encoded solutions I fed into the models. 
+
+* Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
 
