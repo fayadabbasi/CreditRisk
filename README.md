@@ -6,6 +6,8 @@ Lending Club is a peer to peer lending platform that emerged in 2007. The platfo
 
 For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,781 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
 
+_While the scope of this project was just on identifying good versus bad loans, I would like to also apply the loan score with the associated interest rate to identify how to maximize yield._ 
+
 ## Objective
 
 For my project, I am looking to select some features from the dataset and see if I can build a model to predict if a loan is considered a good loan or a bad loan. I have defined good loans as Fully Paid or Current while bad loans are defined as all other categories. 
