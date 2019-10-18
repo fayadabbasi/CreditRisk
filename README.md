@@ -73,6 +73,8 @@ After completing this process, I had 98 categories to evaluate on, all of which 
 AUROC - 0.6999 using 10 features and 0.7016 using 13 features. 
 _Note: I will show data going forward only with 13 features_ 
 
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Logistic_Regression_13_factors.png)
+
 Confusion Matrix - Threshold of 0.5 and 13 features
 
 |           |      |         | 
@@ -112,7 +114,7 @@ Classification Report - Threshold of 0.7 and 13 features
 | 1         | 0.88      | 0.96   | 0.92      | 502,873  | 
 | avg/total | 0.82      | 0.85   | 0.83      | 578,627  | 
 
-![alt text](https://github.com/fayadabbasi/CreditRisk/raw/master/ROC images/ROC Logistic Regression 13 factors.png "Logistic Regression ROC Curve w 13 features")
+
 
 #### Comments
 
@@ -120,6 +122,8 @@ The logistic regression model turned out to have the best AUCROC score of all th
 
 ### Random Forest - Default Class Weighting
 AUROC - 0.667 using 13 features. 
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_13_features.png)
 
 Confusion Matrix - Threshold of 0.5 and 13 features
 
@@ -161,10 +165,13 @@ Classification Report - Threshold of 0.7 and 13 features
 | avg/total | 0.81      | 0.83   | 0.82      | 578,627  | 
 
 
+
 While the AUROC score is lower, the basic threshold evaluation of the Random Forest model captures more of the actual bad loans although still pretty poor. Predicting 2% of actual bad loans, as evidenced by the recall score, is not too helpful and barely better than 1% from the logistic regression model. At 0.7 threshold, I capture 21% of the actual bad loans. 
 
 ## Random Forest with 10:1 class weighting bad:good
 AUROC at 0.6485 for 13 features
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_10-1_Class_Weighting_13_features.png)
 
 Confusion Matrix - Threshold of 0.5 and 13 features
 
@@ -208,12 +215,16 @@ Classification Report - Threshold of 0.7 and 13 features
 | 1         | 0.89      | 0.88   | 0.88      | 502,873  | 
 | avg/total | 0.80      | 0.80   | 0.80      | 578,627  | 
 
+
+
 ### Comments 
 
 Again, there is a similar theme - as we try to improve prediction of bad loans, we inevitable see a trade-off on opportunity cost. Looking at the confusion matrix, for 0.7 threshold on the random forest imbalance, I have lowered my false positives but dramatically increased my true negatives. My combined f-1 scores also seem to be in the 0.80-0.83 range through all the reports so far. 
 
 ### Gradient Boosted Model
 AUROC score of 0.6765
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Gradient_Boosted_13_feature.png)
 
 Confusion Matrix - Threshold of 0.5 and 13 features
 
@@ -234,6 +245,8 @@ Classification Report - Threshold of 0.5 and 13 features
 | 0         | 0.00      | 0.00   | 0.00      | 75,754   | 
 | 1         | 0.87      | 1.00   | 0.93      | 502,873  | 
 | avg/total | 0.76      | 0.87   | 0.81      | 578,627  | 
+
+
 
 ### Comments
 
