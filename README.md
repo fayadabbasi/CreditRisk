@@ -4,7 +4,7 @@
 
 Lending Club is a peer to peer lending platform that emerged in 2007. The platform allows individuals to review loan applications from others and evaluate a variety of inputs and then based on one's conclusions, the individual can commit a designated dollar amount to the applicants. Lending Club provides an API to download information about all historical loans on the platform. 
 
-For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,848 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have a pretty thorough details about the loans. 
+For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,848 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
 
 ## Objective
 
@@ -69,13 +69,13 @@ After completing this process, I had 98 categories to evaluate on, all of which 
 
 ## Results of Model
 
-#### Logistic Regression Model
+### Logistic Regression Model
 AUROC - 0.6999 using 10 features and 0.7016 using 13 features. 
 _Note: I will show data going forward only with 13 features_ 
 
 ![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Logistic_Regression_13_factors.png)
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |      |         | 
 |-----------|------|---------| 
@@ -85,7 +85,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 | 1         |  852 | 502,021 | 
 |           | 1,621| 577,006 |
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -95,7 +95,7 @@ Classification Report - Threshold of 0.5 and 13 features
 | avg/total | 0.82      | 0.87   | 0.81      | 578,627  | 
 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -105,7 +105,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 | 1         | 22,380 | 480,493 | 
 |           | 35,030 | 543,597 | 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -125,7 +125,7 @@ AUROC - 0.667 using 13 features.
 
 ![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_13_features.png)
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |       |         | 
 |-----------|-------|---------| 
@@ -135,7 +135,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 | 1         | 2,729 | 500,144 | 
 |           | 4,324 | 574,303 | 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -144,7 +144,7 @@ Classification Report - Threshold of 0.5 and 13 features
 | 1         | 0.87      | 0.99   | 0.93      | 502,873  | 
 | avg/total | 0.81      | 0.87   | 0.81      | 578,627  | 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -155,7 +155,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 |           | 54,958 | 523,669 | 
 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -168,12 +168,12 @@ Classification Report - Threshold of 0.7 and 13 features
 
 While the AUROC score is lower, the basic threshold evaluation of the Random Forest model captures more of the actual bad loans although still pretty poor. Predicting 2% of actual bad loans, as evidenced by the recall score, is not too helpful and barely better than 1% from the logistic regression model. At 0.7 threshold, I capture 21% of the actual bad loans. 
 
-## Random Forest with 10:1 class weighting bad:good
+### Random Forest with 10:1 class weighting bad:good
 AUROC at 0.6485 for 13 features
 
 ![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_10-1_Class_Weighting_13_features.png)
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -184,7 +184,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 |           | 10,224 | 568,403 | 
 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -195,7 +195,7 @@ Classification Report - Threshold of 0.5 and 13 features
 
 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -206,7 +206,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 |           | 78,601 | 500,026 | 
 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -217,7 +217,7 @@ Classification Report - Threshold of 0.7 and 13 features
 
 
 
-### Comments 
+#### Comments 
 
 Again, there is a similar theme - as we try to improve prediction of bad loans, we inevitable see a trade-off on opportunity cost. Looking at the confusion matrix, for 0.7 threshold on the random forest imbalance, I have lowered my false positives but dramatically increased my true negatives. My combined f-1 scores also seem to be in the 0.80-0.83 range through all the reports so far. 
 
@@ -226,7 +226,7 @@ AUROC score of 0.6765
 
 ![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Gradient_Boosted_13_feature.png)
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -237,7 +237,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 |           |      0 | 578,627 | 
 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -248,7 +248,7 @@ Classification Report - Threshold of 0.5 and 13 features
 
 
 
-### Comments
+#### Comments
 
 Well, why not... The gradient boosted model clearly needs some additional parameter tuning. Given the time it takes to run the model, it will probably be best to leverage some faster processing capacity with AWS EC2. 
 
@@ -256,7 +256,7 @@ Well, why not... The gradient boosted model clearly needs some additional parame
 
 Overall, this is not going to make you rich. The models appear to struggle to capture actual bad loans by defaulting to optimizing the number of good loans. 
 
-Areas to consider for future iterations:
+**Areas to consider for future iterations:**
 
 * The additional of 3 features had minimal impact on the logistic regression model but perhaps other features could result in better enhancements. 
 
