@@ -267,7 +267,5 @@ Overall, this is not going to make you rich. The models appear to struggle to ca
 
 * Running the non categorical data directly on the random forest and gradient boosted models may allow the models to determine better splits and thus better predictability than the one hot encoded solutions I fed into the models. 
 
-* Perform GridSearch to optimize for lower recall on bad loans. 
-
-* Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
+* Perform GridSearch to try to optimize for lower recall on bad loans. Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
 
