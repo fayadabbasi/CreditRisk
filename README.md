@@ -24,18 +24,19 @@ Finally I will run a gradient boosted test. For the boosted model, I am using a 
 
 Below is a simple breakdown of the total loans in the dataset. 
 
-| Status                                              | # Loans   | 
-|-----------------------------------------------------|-----------|-----
-| Fully Paid                                          | 1,191,125 | 50%
-| Current                                             |   868,848 | 36%
-| Charged Off                                         |   287,174 | 12%
-| Late (31-120 days)                                  |    20,775 |  1%
-| In Grace Period                                     |     9,242 | 
-| Late (16-30 days)                                   |     4,826 | 
-| Does not meet the credit policy. Status:Fully Paid  |     1,988 | 
-| Does not meet the credit policy. Status:Charged Off |       761 | 
-| Default                                             |        42 | 
-| Total                                               | 2,384,781 | 100%
+|                                                     |                 |         | 
+|-----------------------------------------------------|-----------------|---------| 
+| Status                                              | Number of Loans | Percent | 
+| Fully Paid                                          | 1191125         | 50%     | 
+| Current                                             | 868848          | 36%     | 
+| Charged Off                                         | 287174          | 12%     | 
+| Late (31-120 days)                                  | 20775           | 1%      | 
+| In Grace Period                                     | 9242            | 0%      | 
+| Late (16-30 days)                                   | 4826            | 0%      | 
+| Does not meet the credit policy. Status:Fully Paid  | 1988            | 0%      | 
+| Does not meet the credit policy. Status:Charged Off | 761             | 0%      | 
+| Default                                             | 42              | 0%      | 
+| Total                                               | 2384781         | 100%    | 
 
 
 ## Critera
