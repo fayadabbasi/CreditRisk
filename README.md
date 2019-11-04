@@ -4,7 +4,9 @@
 
 Lending Club is a peer to peer lending platform that emerged in 2007. The platform allows individuals to review loan applications from others and evaluate a variety of inputs and then based on one's conclusions, the individual can commit a designated dollar amount to the applicants. Lending Club provides an API to download information about all historical loans on the platform. 
 
-For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,848 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have a pretty thorough details about the loans. 
+For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,781 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
+
+_While the scope of this project was just on identifying good versus bad loans, I would like to also apply the loan score with the associated interest rate to identify how to maximize yield._ 
 
 ## Objective
 
@@ -24,17 +26,20 @@ Finally I will run a gradient boosted test. For the boosted model, I am using a 
 
 Below is a simple breakdown of the total loans in the dataset. 
 
-| Status                                              | # Loans   | 
-|-----------------------------------------------------|-----------| 
-| Fully Paid                                          | 1,191,125 | 
-| Current                                             |   868,848 | 
-| Charged Off                                         |   287,174 | 
-| Late (31-120 days)                                  |    20,775 | 
-| In Grace Period                                     |     9,242 | 
-| Late (16-30 days)                                   |     4,826 | 
-| Does not meet the credit policy. Status:Fully Paid  |     1,988 | 
-| Does not meet the credit policy. Status:Charged Off |       761 | 
-| Default                                             |        42 | 
+|                                                     |                 |         | 
+|-----------------------------------------------------|-----------------|---------| 
+| Status                                              | Number of Loans | Percent | 
+| Fully Paid                                          | 1,191,125       | 50%     | 
+| Current                                             |   868,848       | 36%     | 
+| Charged Off                                         |   287,174       | 12%     | 
+| Late (31-120 days)                                  |    20,775       | 1%      | 
+| In Grace Period                                     |     9,242       | 0%      | 
+| Late (16-30 days)                                   |     4,826       | 0%      | 
+| Does not meet the credit policy. Status:Fully Paid  |     1,988       | 0%      | 
+| Does not meet the credit policy. Status:Charged Off |       761       | 0%      | 
+| Default                                             |        42       | 0%      | 
+| Total                                               | 2,384,781       | 100%    | 
+
 
 ## Critera
 
@@ -63,17 +68,21 @@ I first performed some exploration of the dataset. While I initially tried evalu
 
 Next, I one hot encoded all categorical values. This included: grade, home ownership, purpose, employment length, and term of the loan. 
 
-I next created a weight of evidence table for the continuous variables remaining. Weight of evidence is a standard methodology used in the credit industry. Weight of evidence is the log of % good divided by log % bad. By binning the continuous variables and then bucketing them based on their weight of evidence score, I can create relevant binary categories for each feature. For example, by evaluating a number of bin quantities for interest rate (ranging from 20 to 300), I can determine where I get a reasonable breakdown of counts and clustering of weight of evidence scores. If I determine that there is a large clustering of weight of evidence between 10% and 17% interest rate but then see a spike up, I can bin all rates between 10 and 17% together and create a separate bin for the next cluster. I did this for the following categories: loan amount, annual income, interest rate, revolver utilization, open credit (open acc), first three digits of zip code, and total current balance. 
+I next created a weight of evidence table for the continuous variables remaining. Weight of evidence is a standard methodology used in the credit industry. Weight of evidence is the log of % good divided by log % bad. By binning the continuous variables and then bucketing them based on their weight of evidence score, I can create relevant binary categories for each feature. For example, by evaluating a number of bin quantities for interest rate (ranging from 20 to 300), I can determine where I get a reasonable breakdown of counts and clustering of weight of evidence scores. If I determine that there is a large clustering of weight of evidence between 10% and 17% interest rate but then see a spike up, I can bin all rates between 10 and 17% together and create a separate bin for the next cluster. 
+
+I did this for the following categories: loan amount, annual income, interest rate, revolver utilization, open credit (open acc), first three digits of zip code, and total current balance. 
 
 After completing this process, I had 98 categories to evaluate on, all of which were one hot encoded. 
 
 ## Results of Model
 
-#### Logistic Regression Model
+### Logistic Regression Model
 AUROC - 0.6999 using 10 features and 0.7016 using 13 features. 
 _Note: I will show data going forward only with 13 features_ 
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Logistic_Regression_13_factors.png)
+
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |      |         | 
 |-----------|------|---------| 
@@ -83,7 +92,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 | 1         |  852 | 502,021 | 
 |           | 1,621| 577,006 |
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -93,7 +102,7 @@ Classification Report - Threshold of 0.5 and 13 features
 | avg/total | 0.82      | 0.87   | 0.81      | 578,627  | 
 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -103,7 +112,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 | 1         | 22,380 | 480,493 | 
 |           | 35,030 | 543,597 | 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -112,7 +121,7 @@ Classification Report - Threshold of 0.7 and 13 features
 | 1         | 0.88      | 0.96   | 0.92      | 502,873  | 
 | avg/total | 0.82      | 0.85   | 0.83      | 578,627  | 
 
-![alt text](https://github.com/fayadabbasi/CreditRisk/raw/master/ROC images/ROC Logistic Regression 13 factors.png "Logistic Regression ROC Curve w 13 features")
+
 
 #### Comments
 
@@ -121,7 +130,9 @@ The logistic regression model turned out to have the best AUCROC score of all th
 ### Random Forest - Default Class Weighting
 AUROC - 0.667 using 13 features. 
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_13_features.png)
+
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |       |         | 
 |-----------|-------|---------| 
@@ -131,7 +142,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 | 1         | 2,729 | 500,144 | 
 |           | 4,324 | 574,303 | 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -140,7 +151,7 @@ Classification Report - Threshold of 0.5 and 13 features
 | 1         | 0.87      | 0.99   | 0.93      | 502,873  | 
 | avg/total | 0.81      | 0.87   | 0.81      | 578,627  | 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -151,7 +162,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 |           | 54,958 | 523,669 | 
 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -161,12 +172,15 @@ Classification Report - Threshold of 0.7 and 13 features
 | avg/total | 0.81      | 0.83   | 0.82      | 578,627  | 
 
 
+
 While the AUROC score is lower, the basic threshold evaluation of the Random Forest model captures more of the actual bad loans although still pretty poor. Predicting 2% of actual bad loans, as evidenced by the recall score, is not too helpful and barely better than 1% from the logistic regression model. At 0.7 threshold, I capture 21% of the actual bad loans. 
 
-## Random Forest with 10:1 class weighting bad:good
+### Random Forest with 10:1 class weighting bad:good
 AUROC at 0.6485 for 13 features
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_10-1_Class_Weighting_13_features.png)
+
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -177,7 +191,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 |           | 10,224 | 568,403 | 
 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -188,7 +202,7 @@ Classification Report - Threshold of 0.5 and 13 features
 
 
 
-Confusion Matrix - Threshold of 0.7 and 13 features
+**Confusion Matrix - Threshold of 0.7 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -199,7 +213,7 @@ Confusion Matrix - Threshold of 0.7 and 13 features
 |           | 78,601 | 500,026 | 
 
 
-Classification Report - Threshold of 0.7 and 13 features
+**Classification Report - Threshold of 0.7 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -208,14 +222,18 @@ Classification Report - Threshold of 0.7 and 13 features
 | 1         | 0.89      | 0.88   | 0.88      | 502,873  | 
 | avg/total | 0.80      | 0.80   | 0.80      | 578,627  | 
 
-### Comments 
+
+
+#### Comments 
 
 Again, there is a similar theme - as we try to improve prediction of bad loans, we inevitable see a trade-off on opportunity cost. Looking at the confusion matrix, for 0.7 threshold on the random forest imbalance, I have lowered my false positives but dramatically increased my true negatives. My combined f-1 scores also seem to be in the 0.80-0.83 range through all the reports so far. 
 
 ### Gradient Boosted Model
 AUROC score of 0.6765
 
-Confusion Matrix - Threshold of 0.5 and 13 features
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Gradient_Boosted_13_feature.png)
+
+**Confusion Matrix - Threshold of 0.5 and 13 features**
 
 |           |        |         | 
 |-----------|--------|---------| 
@@ -226,7 +244,7 @@ Confusion Matrix - Threshold of 0.5 and 13 features
 |           |      0 | 578,627 | 
 
 
-Classification Report - Threshold of 0.5 and 13 features
+**Classification Report - Threshold of 0.5 and 13 features**
 
 |           |           |        |           |          | 
 |-----------|-----------|--------|-----------|----------| 
@@ -235,7 +253,9 @@ Classification Report - Threshold of 0.5 and 13 features
 | 1         | 0.87      | 1.00   | 0.93      | 502,873  | 
 | avg/total | 0.76      | 0.87   | 0.81      | 578,627  | 
 
-### Comments
+
+
+#### Comments
 
 Well, why not... The gradient boosted model clearly needs some additional parameter tuning. Given the time it takes to run the model, it will probably be best to leverage some faster processing capacity with AWS EC2. 
 
@@ -243,11 +263,11 @@ Well, why not... The gradient boosted model clearly needs some additional parame
 
 Overall, this is not going to make you rich. The models appear to struggle to capture actual bad loans by defaulting to optimizing the number of good loans. 
 
-Areas to consider for future iterations:
+**Areas to consider for future iterations:**
 
 * The additional of 3 features had minimal impact on the logistic regression model but perhaps other features could result in better enhancements. 
 
 * Running the non categorical data directly on the random forest and gradient boosted models may allow the models to determine better splits and thus better predictability than the one hot encoded solutions I fed into the models. 
 
-* Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
+* Perform GridSearch to try to optimize for lower recall on bad loans. Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
 
