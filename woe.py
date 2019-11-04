@@ -1,27 +1,58 @@
 # By going through each category, I manually determined the coarse classification of the columns.
 # While trying to determine an algorithmic way of doing this, I need to make sure I still do the same for the test set
 # do not want to coarse classify something in the train set and find the test set is done differently
+import numpy as np  
+import pandas as pd  
+import matplotlib.pyplot as plt     
 
-def woe_ordered_continuous(df, discrete_variable_name, good_bad_variable_df):
-    df = pd.concat([df[discrete_variable_name], good_bad_variable_df],axis=1)
-    df = pd.concat([df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].count(),df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].mean()], axis=1)
-    df = df.iloc[:,[0,1,3]]
-    df.columns = [df.columns.values[0], 'n_obs', 'prop_good']
-    df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
-    df['n_good'] = df['prop_good'] * df['n_obs']
-    df['n_bad'] = (1-df['prop_good']) * df['n_obs']
-    df['prop_n_good'] = df['n_good']/ df['n_good'].sum()
-    df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
-    df['WoE'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
-    # df = df.sort_values(['WoE'])
-    # df = df.reset_index(drop=True)
-    df['diff_prop_good'] = df['prop_good'].diff().abs()
-    df['diff_WoE'] = df['WoE'].diff().abs()
-    df['IV'] = (df['prop_n_good'] - df['prop_n_bad']) * df['WoE']
-    df['IV'] = df['IV'].sum()
-    return df
+from xxxx import X_train, X_test, y_train, y_test
 
-df_inputs_prepr, df_targets_prepr = loan_data_input_train, loan_data_target_train
+class OneHotEncoding:
+    def __init__(self, discrete_variable_name, good_bad_variable_df):
+        self.dummies_list = ['grade','home_ownership','purpose','emp_length_int','term_int'] # ['sub_grade','verification_status','loan_status','addr_state','initial_list_status']
+        self.discrete_variable_name = discrete_variable_name
+        self.good_bad_variable_df = good_bad_variable_df
+
+    def loan_data_d(self, dataframe):
+        for items in self.dummies_list:
+            loan_data_dummies = [pd.get_dummies(dataframe[items], prefix=items,prefix_sep=':')]
+            loan_data_dummies = pd.concat(loan_data_dummies, axis=1)
+            dataframe = pd.concat([dataframe, loan_data_dummies], axis = 1)
+        return dataframe
+
+
+    def woe_ordered_continuous(self, df, discrete_variable_name, good_bad_variable_df):
+        df = pd.concat([df[discrete_variable_name], good_bad_variable_df],axis=1)
+        df = pd.concat([df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].count(),df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].mean()], axis=1)
+        df = df.iloc[:,[0,1,3]]
+        df.columns = [df.columns.values[0], 'n_obs', 'prop_good']
+        df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
+        df['n_good'] = df['prop_good'] * df['n_obs']
+        df['n_bad'] = (1-df['prop_good']) * df['n_obs']
+        df['prop_n_good'] = df['n_good']/ df['n_good'].sum()
+        df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
+        df['WoE'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
+        # df = df.sort_values(['WoE'])
+        # df = df.reset_index(drop=True)
+        df['diff_prop_good'] = df['prop_good'].diff().abs()
+        df['diff_WoE'] = df['WoE'].diff().abs()
+        df['IV'] = (df['prop_n_good'] - df['prop_n_bad']) * df['WoE']
+        df['IV'] = df['IV'].sum()
+        return df
+
+    def plot_by_woe(self, df_WoE, rotation_of_x_axis_label=0):
+        x = np.array(self.df_WoE.iloc[:,0].apply(str))
+        y = self.df_WoE['WoE']
+        plt.figure(figsize=(18,6))
+        plt.plot(x,y,marker='o', linestyle='--',color='k')
+        plt.xlabel = (self.df_WoE.columns[0])
+        plt.ylabel = ('Weight of Evidence')
+        plt.title(str('Weight of Evidence by '+ self.df_WoE.columns[0]))
+        plt.xticks(rotation=rotation_of_x_axis_label)
+        # plot_by_woe(df_temp)
+
+
+df_inputs_prepr, df_targets_prepr = X_train, y_train
 
 df_inputs_prepr['loan_amnt_factor'] = pd.cut(df_inputs_prepr['loan_amnt'],30)
 df_inputs_prepr['loan_amnt_factor:1'] = np.where((df_inputs_prepr['loan_amnt_factor'].isin(range(1817))),1,0)
@@ -130,7 +161,7 @@ df_inputs_prepr['mths_since_issue_d_factor:'+'95+'] = np.where(df_inputs_prepr['
 NOW DO THE SAME FOR THE TEST SET
 '''
 
-df_inputs_prepr_t, df_targets_prepr_t = loan_data_input_test, loan_data_target_test
+df_inputs_prepr_t, df_targets_prepr_t = X_test, y_test
 
 df_inputs_prepr_t['loan_amnt_factor:1'] = np.where((df_inputs_prepr_t['loan_amnt_factor'].isin(range(1817))),1,0)
 df_inputs_prepr_t['loan_amnt_factor:2'] = np.where((df_inputs_prepr_t['loan_amnt_factor'].isin(range(1817,7084))),1,0)
