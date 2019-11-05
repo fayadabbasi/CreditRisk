@@ -71,7 +71,7 @@ class Preprocessing:
         '''
         create a good_bad column which will have a 0 if the loan is bad and 1 if it is good
         this is going to be the target or y for my model
-        ********* THIS IS SOMETHING I SHOULD REVISE - SEE IF 16-30 DAYS IMPACTS RESULTS **********
+        ********* THIS IS SOMETHING I COULD REVISE - SEE IF 16-30 DAYS IMPACTS RESULTS **********
         '''
         dataframe = dataframe[dataframe['loan_status']!='Current']
         dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),0,1)
@@ -87,9 +87,6 @@ class Preprocessing:
         '''
         for items in dataframe.columns:
             dataframe = dataframe[dataframe[items].notnull()]
-        
-        #dataframe = dataframe[dataframe['loan_status']!='Current']
-        #dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),0,1)
         
         return dataframe
 
@@ -114,10 +111,9 @@ class Preprocessing:
         '''
         create a good_bad column which will have a 0 if the loan is bad and 1 if it is good
         this is going to be the target or y for my model
-        ********* THIS IS SOMETHING I SHOULD REVISE - SEE IF 16-30 DAYS IMPACTS RESULTS **********
+        ********* THIS IS SOMETHING I COULD REVISE - SEE IF 16-30 DAYS IMPACTS RESULTS **********
         '''
         dataframe = dataframe[dataframe['loan_status']=='Current']
-        #dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),0,1)
         
         '''
         this creates a list of column names where the percent of missing values is greater than the threshold which is set to 95% as default
@@ -130,9 +126,6 @@ class Preprocessing:
         '''
         for items in dataframe.columns:
             dataframe = dataframe[dataframe[items].notnull()]
-        
-        #dataframe = dataframe[dataframe['loan_status']!='Current']
-        #dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),0,1)
         
         return dataframe
 
