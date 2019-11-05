@@ -13,7 +13,7 @@ class OneHotEncoding:
 
     def loan_data_d(self, dataframe, dlist):
         for items in dlist:
-            loan_data_dummies = [pd.get_dummies(dataframe[items], prefix=items,prefix_sep=':')]
+            loan_data_dummies = [pd.get_dummies(dataframe[items], drop_first=True, prefix=items,prefix_sep=':')]
             loan_data_dummies = pd.concat(loan_data_dummies, axis=1)
             dataframe = pd.concat([dataframe, loan_data_dummies], axis = 1)
         return dataframe
@@ -277,19 +277,19 @@ class OneHotEncoding:
         # have addr_state and mths_since_issue_d_factor to add
 
 if __name__ == '__main__':
-    X_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train.csv')
-    X_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test.csv')
-    y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv')
-    y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv')
+    # X_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train.csv')
+    # X_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test.csv')
+    # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv')
+    # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv')
 
-    dummies_list_logreg = ['grade','home_ownership','payment_plan','purpose','emp_length_int','term_int','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
-    dummies_list_other = ['grade','home_ownership','payment_plan','purpose','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
+    # dummies_list_logreg = ['grade','home_ownership','payment_plan','purpose','emp_length_int','term_int','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
+    # dummies_list_other = ['grade','home_ownership','payment_plan','purpose','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
     
-    ohe = OneHotEncoding()
-    dummies_logreg_train = ohe.loan_data_d(X_train, dummies_list_logreg)
-    dummies_logreg_test = ohe.loan_data_d(X_test, dummies_list_logreg)
-    dummies_other_train = ohe.loan_data_d(X_train, dummies_list_other)
-    dummies_other_test = ohe.loan_data_d(X_test, dummies_list_other)
+    # ohe = OneHotEncoding()
+    # dummies_logreg_train = ohe.loan_data_d(X_train, dummies_list_logreg)
+    # dummies_logreg_test = ohe.loan_data_d(X_test, dummies_list_logreg)
+    # dummies_other_train = ohe.loan_data_d(X_train, dummies_list_other)
+    # dummies_other_test = ohe.loan_data_d(X_test, dummies_list_other)
 
 
 
