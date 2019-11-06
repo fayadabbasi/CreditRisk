@@ -34,6 +34,7 @@ class RandFor:
         # score = rfit.score(xtr, ytr)
 
         df_actual_predicted_probs['yhat_test_proba'] = np.where(df_actual_predicted_probs['yhat_test'] > tr, 1, 0)
+        # TODO: BE SURE TO FLIP BAD AND GOOD FROM 1 to 0
 
         #pd.crosstab(df_actual_predicted_probs_rf['loan_data_targets_test'], df_actual_predicted_probs_rf['yhat_test_proba_rf'], rownames=['Actual'], colnames=['Predicted'])
         #print(confusion_matrix(df_actual_predicted_probs_rf['loan_data_targets_test'], df_actual_predicted_probs_rf['yhat_test_proba_rf']))

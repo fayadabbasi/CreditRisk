@@ -84,7 +84,7 @@ class Preprocessing:
         dataframe.drop(df_drop_val, axis=1, inplace=True)
         dataframe.drop(self.misc_drop_list, axis=1, inplace=True)
         '''
-        this drops rows that have no values - tested to be about 0.2% of all rows or about 4300
+        this drops rows that have no values - tested to be about 0.2% of all rows or about 4700
         '''
         for items in dataframe.columns:
             dataframe = dataframe[dataframe[items].notnull()]
@@ -131,6 +131,48 @@ class Preprocessing:
         
         return dataframe
 
+
+    def action_LGD(self, dataframe, tr=0.95):
+        '''
+        This function actual does the preprocess editing to the dataframe
+        OUTPUT: dataframe
+        '''
+        
+        dataframe = dataframe[dataframe.id!='id']
+
+        for items in self.convert_to_numeric:
+            dataframe[items] = pd.to_numeric(dataframe[items])
+        
+        self.emp_length(dataframe)
+        self.term_length(dataframe)
+        self.perc_convert(dataframe, column='int_rate')
+        self.perc_convert(dataframe, column='revol_util')
+        self.zip_convert(dataframe)
+        # replace the na values of annual_inc with the mean annual_inc amount
+        dataframe['annual_inc'].fillna(dataframe['annual_inc'].mean(), inplace=True)
+    
+        '''
+        create a good_bad column which will have a 0 if the loan is bad and 1 if it is good
+        this is going to be the target or y for my model
+        ********* THIS IS SOMETHING I COULD REVISE - SEE IF 16-30 DAYS IMPACTS RESULTS **********
+        '''
+        #dataframe = dataframe[dataframe['loan_status']!='Current']
+        #dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),0,1)
+        
+        '''
+        this creates a list of column names where the percent of missing values is greater than the threshold which is set to 95% as default
+        '''
+        df_drop_val = [x for x in dataframe.columns if (100* dataframe[x].isnull().sum() / len(dataframe))>tr]
+        dataframe.drop(df_drop_val, axis=1, inplace=True)
+        dataframe.drop(self.misc_drop_list, axis=1, inplace=True)
+        '''
+        this drops rows that have no values - tested to be about 0.2% of all rows or about 4700
+        '''
+        for items in dataframe.columns:
+            dataframe = dataframe[dataframe[items].notnull()]
+        
+        return dataframe
+
 if __name__ == '__main__':
     
     df_backup = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/merged.csv', skiprows=1, low_memory=False)
@@ -139,6 +181,8 @@ if __name__ == '__main__':
     prep = Preprocessing()
     df = prep.action(df)
     current = prep.action_current(df_backup)
+    
+    #TODO: send to postgres
 
     X_train, X_test, y_train, y_test = tts(df.drop(['loan_status','good_bad'], axis=1), df['good_bad'], test_size=0.25, random_state=42)
     X_train.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train.csv')
