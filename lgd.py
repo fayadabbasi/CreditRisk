@@ -241,7 +241,13 @@ def action_2():
 
     lgd_targets_stage_2_test_temp = lgd_targets_stage_2_test_temp.reset_index(drop = True)
 
-    
+def combined_action():
+    y_hat_test_lgd_stage_2_all = reg_lgd_st_2.predict(lgd_inputs_stage_1_test)
+    y_hat_test_lgd_stage_2_all
+    y_hat_test_lgd = y_hat_test_lgd_stage_1 * y_hat_test_lgd_stage_2_all
+    y_hat_test_lgd = np.where(y_hat_test_lgd < 0, 0, y_hat_test_lgd)
+    y_hat_test_lgd = np.where(y_hat_test_lgd > 1, 1, y_hat_test_lgd)
+
 
 if __name__ == '__main__':
     '''
