@@ -11,7 +11,8 @@ class RandFor:
 
     def randfor_action(self, xtr, xte, ytr, yte, tr=0.5, class_weight={0:10, 1:1}, n_estimators=50, max_depth=None):    
         '''
-        Returns: df_actual_predicted_probs, fpr, tpr, thresholds, auroc, and score
+        Perform Random Forest fit and prediction and output key variables for determining performance of model
+        OUTPUT: df_actual_predicted_probs, fpr, tpr, thresholds, auroc, and score
         '''
         
         y_glb = ytr.iloc[:,0]

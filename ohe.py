@@ -13,6 +13,10 @@ class OHE:
         return dataframe
 
     def action(self, train, test, other):
+        '''
+        Performs the one hot encoding for the dataset based on a list of inputs: 1) train - training dataframe; 2) test - test dataframe, 3) other - input list of fields to one hot encode
+        OUTPUT: Modified Train dataframe, Modified Test dataframe
+        '''
         dummies_other_train = self.loan_data_d(train, other)
         dummies_other_test = self.loan_data_d(test, other)
 

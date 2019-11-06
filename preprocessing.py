@@ -53,6 +53,7 @@ class Preprocessing:
     def action(self, dataframe, tr=0.95):
         '''
         This function actual does the preprocess editing to the dataframe
+        OUTPUT: dataframe
         '''
         
         dataframe = dataframe[dataframe.id!='id']
@@ -93,6 +94,7 @@ class Preprocessing:
     def action_current(self, dataframe, tr=0.95):
         '''
         This function actual does the preprocess editing to the dataframe
+        OUTPUT: dataframe
         '''
         
         dataframe = dataframe[dataframe.id!='id']

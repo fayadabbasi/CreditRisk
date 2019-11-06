@@ -10,6 +10,10 @@ class WOE:
         pass
 
     def woe_ordered_continuous(self, df, discrete_variable_name, good_bad_variable_df):
+        '''
+        Provides a dataframe to analyze the weight of evidence for selected inputs
+        OUTPUT: dataframe
+        '''
         df = pd.concat([df[discrete_variable_name], good_bad_variable_df],axis=1)
         df = pd.concat([df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].count(),df.groupby(df.columns.values[0], as_index=False)[df.columns.values[1]].mean()], axis=1)
         df = df.iloc[:,[0,1,3]]
@@ -43,7 +47,7 @@ class WOE:
         '''
         This manually assigned the appropriate range for Weight of Evidence for the selected one hot encoded categories
 
-        Output - new train and test inputs and targets
+        OUTPUT: new train and test inputs and targets
         '''
 
         df_inputs_prepr = X_train
