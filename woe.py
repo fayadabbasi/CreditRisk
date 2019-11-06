@@ -39,13 +39,13 @@ class OneHotEncoding:
         plt.xticks(rotation=rotation_of_x_axis_label)
         # plot_by_woe(df_temp)
 
-    def action_woe(self, X_train, y_train, X_test, y_test):
+    def action_woe(X_train, y_train):
         '''
         This manually assigned the appropriate range for Weight of Evidence for the selected one hot encoded categories
 
         Output - new train and test inputs and targets
         '''
-        
+
         df_inputs_prepr, df_targets_prepr = X_train, y_train
         if 'loan_amnt' in X_train:
             df_inputs_prepr['loan_amnt_factor'] = pd.cut(df_inputs_prepr['loan_amnt'],30)
@@ -145,11 +145,11 @@ class OneHotEncoding:
         else:
             pass
 
-        if 'addr_state' in X_train:
+        if 'addr_state:OK' in X_train:
             df_inputs_prepr['addr_state:OK_AR_LA_MS'] = sum([df_inputs_prepr['addr_state:OK'],df_inputs_prepr['addr_state:AR'],df_inputs_prepr['addr_state:LA'],df_inputs_prepr['addr_state:MS']])
             df_inputs_prepr['addr_state:NV_NY'] = sum([df_inputs_prepr['addr_state:NV'],df_inputs_prepr['addr_state:NY']])
             df_inputs_prepr['addr_state:HI_FL_NM'] = sum([df_inputs_prepr['addr_state:HI'],df_inputs_prepr['addr_state:FL'],df_inputs_prepr['addr_state:NM']])
-            df_inputs_prepr['addr_state:MD_MO_AK_PA_NC_NJ_IN'] = sum([df_inputs_prepr['addr_state:MD'],df_inputs_prepr['addr_state:MO'],df_inputs_prepr['addr_state:AK'],df_inputs_prepr['addr_state:PA'],df_inputs_prepr['addr_state:NC'],df_inputs_prepr['addr_state:NJ'],df_inputs_prepr['addr_state:IN']])
+            df_inputs_prepr['addr_state:MD_MO_PA_NC_NJ_IN'] = sum([df_inputs_prepr['addr_state:MD'],df_inputs_prepr['addr_state:MO'],df_inputs_prepr['addr_state:PA'],df_inputs_prepr['addr_state:NC'],df_inputs_prepr['addr_state:NJ'],df_inputs_prepr['addr_state:IN']])
             df_inputs_prepr['addr_state:KY_CA'] = sum([df_inputs_prepr['addr_state:KY'],df_inputs_prepr['addr_state:CA']])
             df_inputs_prepr['addr_state:SD_NE_TN_MI_DE_VA'] = sum([df_inputs_prepr['addr_state:SD'],df_inputs_prepr['addr_state:NE'],df_inputs_prepr['addr_state:TN'],df_inputs_prepr['addr_state:MI'],df_inputs_prepr['addr_state:DE'],df_inputs_prepr['addr_state:VA']])
             df_inputs_prepr['addr_state:MN_AZ_TX_OH'] = sum([df_inputs_prepr['addr_state:MN'],df_inputs_prepr['addr_state:AZ'],df_inputs_prepr['addr_state:TX'],df_inputs_prepr['addr_state:OH']])
@@ -158,7 +158,7 @@ class OneHotEncoding:
             df_inputs_prepr['addr_state:WY_KS_WA'] = sum([df_inputs_prepr['addr_state:WY'],df_inputs_prepr['addr_state:KS'],df_inputs_prepr['addr_state:WA']])
             df_inputs_prepr['addr_state:ND_CO'] = sum([df_inputs_prepr['addr_state:ND'],df_inputs_prepr['addr_state:CO']])
             df_inputs_prepr['addr_state:SC_OR_DC'] = sum([df_inputs_prepr['addr_state:SC'],df_inputs_prepr['addr_state:OR'],df_inputs_prepr['addr_state:DC']])
-            df_inputs_prepr = df_inputs_prepr.drop(['addr_state','addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:AK','addr_state:PA','addr_state:NC'], axis=1)
+            df_inputs_prepr = df_inputs_prepr.drop(['addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:ND','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
@@ -176,7 +176,7 @@ class OneHotEncoding:
             df_inputs_prepr['mths_since_issue_d_factor:'+'95+'] = np.where(df_inputs_prepr['mths_since_issue_d'].isin(range(95,int(df_inputs_prepr['mths_since_issue_d'].max()))),1,0)
         else:
             pass 
-        
+
 
         '''
         NOW DO THE SAME FOR THE TEST SET
@@ -285,7 +285,7 @@ class OneHotEncoding:
             df_inputs_prepr_t['addr_state:OK_AR_LA_MS'] = sum([df_inputs_prepr_t['addr_state:OK'],df_inputs_prepr_t['addr_state:AR'],df_inputs_prepr_t['addr_state:LA'],df_inputs_prepr_t['addr_state:MS']])
             df_inputs_prepr_t['addr_state:NV_NY'] = sum([df_inputs_prepr_t['addr_state:NV'],df_inputs_prepr_t['addr_state:NY']])
             df_inputs_prepr_t['addr_state:HI_FL_NM'] = sum([df_inputs_prepr_t['addr_state:HI'],df_inputs_prepr_t['addr_state:FL'],df_inputs_prepr_t['addr_state:NM']])
-            df_inputs_prepr_t['addr_state:MD_MO_AK_PA_NC_NJ_IN'] = sum([df_inputs_prepr_t['addr_state:MD'],df_inputs_prepr_t['addr_state:MO'],df_inputs_prepr_t['addr_state:AK'],df_inputs_prepr_t['addr_state:PA'],df_inputs_prepr_t['addr_state:NC'],df_inputs_prepr_t['addr_state:NJ'],df_inputs_prepr_t['addr_state:IN']])
+            df_inputs_prepr_t['addr_state:MD_MO_PA_NC_NJ_IN'] = sum([df_inputs_prepr_t['addr_state:MD'],df_inputs_prepr_t['addr_state:MO'],df_inputs_prepr_t['addr_state:PA'],df_inputs_prepr_t['addr_state:NC'],df_inputs_prepr_t['addr_state:NJ'],df_inputs_prepr_t['addr_state:IN']])
             df_inputs_prepr_t['addr_state:KY_CA'] = sum([df_inputs_prepr_t['addr_state:KY'],df_inputs_prepr_t['addr_state:CA']])
             df_inputs_prepr_t['addr_state:SD_NE_TN_MI_DE_VA'] = sum([df_inputs_prepr_t['addr_state:SD'],df_inputs_prepr_t['addr_state:NE'],df_inputs_prepr_t['addr_state:TN'],df_inputs_prepr_t['addr_state:MI'],df_inputs_prepr_t['addr_state:DE'],df_inputs_prepr_t['addr_state:VA']])
             df_inputs_prepr_t['addr_state:MN_AZ_TX_OH'] = sum([df_inputs_prepr_t['addr_state:MN'],df_inputs_prepr_t['addr_state:AZ'],df_inputs_prepr_t['addr_state:TX'],df_inputs_prepr_t['addr_state:OH']])
@@ -294,7 +294,7 @@ class OneHotEncoding:
             df_inputs_prepr_t['addr_state:WY_KS_WA'] = sum([df_inputs_prepr_t['addr_state:WY'],df_inputs_prepr_t['addr_state:KS'],df_inputs_prepr_t['addr_state:WA']])
             df_inputs_prepr_t['addr_state:ND_CO'] = sum([df_inputs_prepr_t['addr_state:ND'],df_inputs_prepr_t['addr_state:CO']])
             df_inputs_prepr_t['addr_state:SC_OR_DC'] = sum([df_inputs_prepr_t['addr_state:SC'],df_inputs_prepr_t['addr_state:OR'],df_inputs_prepr_t['addr_state:DC']])
-            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state','addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:AK','addr_state:PA','addr_state:NC'], axis=1)
+            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state','addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:ND','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
@@ -312,8 +312,9 @@ class OneHotEncoding:
             df_inputs_prepr_t['mths_since_issue_d_factor:'+'95+'] = np.where(df_inputs_prepr_t['mths_since_issue_d'].isin(range(95,int(df_inputs_prepr_t['mths_since_issue_d'].max()))),1,0)
         else:
             pass 
+        return df_inputs_prepr, df_inputs_prepr_t
 
-        # have addr_state and mths_since_issue_d_factor to add
+            # have addr_state and mths_since_issue_d_factor to add
 
 if __name__ == '__main__':
     # X_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train.csv')
