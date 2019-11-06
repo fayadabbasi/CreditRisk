@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd  
 import matplotlib.pyplot as plt     
 
-class OneHotEncoding:
+class WOE:
     def __init__(self):
         pass
 
@@ -39,14 +39,14 @@ class OneHotEncoding:
         plt.xticks(rotation=rotation_of_x_axis_label)
         # plot_by_woe(df_temp)
 
-    def action_woe(X_train, y_train):
+    def action_woe(self, X_train, X_test):
         '''
         This manually assigned the appropriate range for Weight of Evidence for the selected one hot encoded categories
 
         Output - new train and test inputs and targets
         '''
 
-        df_inputs_prepr, df_targets_prepr = X_train, y_train
+        df_inputs_prepr = X_train
         if 'loan_amnt' in X_train:
             df_inputs_prepr['loan_amnt_factor'] = pd.cut(df_inputs_prepr['loan_amnt'],30)
             df_inputs_prepr['loan_amnt_factor:1'] = np.where((df_inputs_prepr['loan_amnt_factor'].isin(range(1817))),1,0)
@@ -182,7 +182,7 @@ class OneHotEncoding:
         NOW DO THE SAME FOR THE TEST SET
         '''
 
-        df_inputs_prepr_t, df_targets_prepr_t = X_test, y_test
+        df_inputs_prepr_t = X_test
         if 'loan_amnt' in X_test:
             df_inputs_prepr_t['loan_amnt_factor'] = pd.cut(df_inputs_prepr_t['loan_amnt'],30)
             df_inputs_prepr_t['loan_amnt_factor:1'] = np.where((df_inputs_prepr_t['loan_amnt_factor'].isin(range(1817))),1,0)
@@ -281,7 +281,7 @@ class OneHotEncoding:
         else:
             pass  
 
-        if 'addr_state' in X_test:
+        if 'addr_state:OK' in X_test:
             df_inputs_prepr_t['addr_state:OK_AR_LA_MS'] = sum([df_inputs_prepr_t['addr_state:OK'],df_inputs_prepr_t['addr_state:AR'],df_inputs_prepr_t['addr_state:LA'],df_inputs_prepr_t['addr_state:MS']])
             df_inputs_prepr_t['addr_state:NV_NY'] = sum([df_inputs_prepr_t['addr_state:NV'],df_inputs_prepr_t['addr_state:NY']])
             df_inputs_prepr_t['addr_state:HI_FL_NM'] = sum([df_inputs_prepr_t['addr_state:HI'],df_inputs_prepr_t['addr_state:FL'],df_inputs_prepr_t['addr_state:NM']])
@@ -294,7 +294,7 @@ class OneHotEncoding:
             df_inputs_prepr_t['addr_state:WY_KS_WA'] = sum([df_inputs_prepr_t['addr_state:WY'],df_inputs_prepr_t['addr_state:KS'],df_inputs_prepr_t['addr_state:WA']])
             df_inputs_prepr_t['addr_state:ND_CO'] = sum([df_inputs_prepr_t['addr_state:ND'],df_inputs_prepr_t['addr_state:CO']])
             df_inputs_prepr_t['addr_state:SC_OR_DC'] = sum([df_inputs_prepr_t['addr_state:SC'],df_inputs_prepr_t['addr_state:OR'],df_inputs_prepr_t['addr_state:DC']])
-            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state','addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
+            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:ND','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
@@ -317,21 +317,17 @@ class OneHotEncoding:
             # have addr_state and mths_since_issue_d_factor to add
 
 if __name__ == '__main__':
-    # X_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train.csv')
-    # X_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test.csv')
+    X_train_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_ohe.csv')
+    X_test_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_ohe.csv')
     # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv')
     # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv')
 
-    # dummies_list_logreg = ['grade','home_ownership','payment_plan','purpose','emp_length_int','term_int','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
-    # dummies_list_other = ['grade','home_ownership','payment_plan','purpose','sub_grade','verification_status','loan_status','addr_state','initial_list_status','application_type','hardship_flag','debt_settlement_flag']
-    
-    # dummies_logreg_train = ohe.loan_data_d(X_train, dummies_list_logreg)
-    # dummies_logreg_test = ohe.loan_data_d(X_test, dummies_list_logreg)
-    # dummies_other_train = ohe.loan_data_d(X_train, dummies_list_other)
-    # dummies_other_test = ohe.loan_data_d(X_test, dummies_list_other)
+    woe = WOE()
 
+    X_train_woe, X_test_woe = woe.action_woe(X_train_ohe, X_test_ohe)
 
-
-
-
-
+    # print(X_train_woe.shape)
+    # print(X_test_woe.shape)
+    X_train_woe.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe.csv')
+    X_test_woe.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe.csv')
+    print('MISSION ACCOMPLISHED!!!')
