@@ -17,12 +17,12 @@ class RandFor:
         
         y_glb = ytr.iloc[:,0]
 
-        rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, class_weight=class_weight, random_state=42, n_jobs=-1).fit(xtr, y_glb)
-        # r = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, class_weight=class_weight, random_state=42, n_jobs=-1)
-        # rfit = r.fit(xtr, ytr)
+        # rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, class_weight=class_weight, random_state=42, n_jobs=-1).fit(xtr, y_glb)
+        r = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, class_weight=class_weight, random_state=42, n_jobs=-1)
+        rfit = r.fit(xtr, y_glb)
         #print("The random forest classifier score is is: {:3%}".format(rf.score(input_train, y_glb)))
 
-        yhat_test = rf.predict_proba(xte)
+        yhat_test = rfit.predict_proba(xte)
         yhat_test = pd.DataFrame(yhat_test) 
 
         df_actual_predicted_probs = pd.concat([yte, yhat_test.iloc[:,1]], axis=1)
@@ -30,7 +30,7 @@ class RandFor:
         df_actual_predicted_probs.index = xte.index
         #df_actual_predicted_probs.head(3)
 
-        score = rf.score(xtr, y_glb)
+        score = rfit.score(xtr, y_glb)
         # score = rfit.score(xtr, ytr)
 
         df_actual_predicted_probs['yhat_test_proba'] = np.where(df_actual_predicted_probs['yhat_test'] > tr, 1, 0)
@@ -59,12 +59,16 @@ if __name__ == '__main__':
     y_train = pd.read_csv('/home/ubuntu/y_train.csv', header=None)
     y_test = pd.read_csv('/home/ubuntu/y_test.csv', header=None)
 
+    X_train.drop(['Unnamed: 0','Unnamed: 0.1'], axis=1, inplace=True)
+    X_test.drop(['Unnamed: 0','Unnamed: 0.1'], axis=1, inplace=True)
+
     ###### NEED TO CHECK FOR THE UNNAMED COLUMN IN POSITION 1 ###############
     ###### ALSO FOR THE RANDOM FOREST I NEED TO MAKE SURE I DO NOT DUMMIE EVERYTHING ########
 
     r = RandFor()
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train, y_test, tr=0.5, class_weight={0:10, 1:1}, n_estimators=10, max_depth=2)
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train, y_test, tr=0.5, class_weight={0:10, 1:1}, n_estimators=50, max_depth=10)
     print("The random forest classifier score is is: {:3%}".format(score))
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print(classification_report(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
+
