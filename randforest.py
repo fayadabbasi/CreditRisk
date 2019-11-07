@@ -9,7 +9,7 @@ class RandFor:
     def __init__(self):
         pass
 
-    def randfor_action(self, xtr, xte, ytr, yte, tr=0.5, class_weight={0:10, 1:1}, n_estimators=50, max_depth=None):    
+    def randfor_action(self, xtr, xte, ytr, yte, tr=0.5, class_weight={0:10, 1:1}, n_estimators=50, max_depth=5):    
         '''
         Perform Random Forest fit and prediction and output key variables for determining performance of model
         OUTPUT: df_actual_predicted_probs, fpr, tpr, thresholds, auroc, and score
