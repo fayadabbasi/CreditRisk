@@ -49,11 +49,16 @@ class RandFor:
 
 if __name__ == '__main__':
     
-    X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe.csv')
-    X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe.csv')
-    y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv', header=None)
-    y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv', header=None)
+    # X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe.csv')
+    # X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe.csv')
+    # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv', header=None)
+    # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv', header=None)
     
+    X_train_woe = pd.read_csv('./CreditRisk/X_train_woe.csv')
+    X_test_woe = pd.read_csv('./CreditRisk/X_test_woe.csv')
+    y_train = pd.read_csv('./CreditRisk/y_train.csv', header=None)
+    y_test = pd.read_csv('./CreditRisk/y_test.csv', header=None)
+
     ###### NEED TO CHECK FOR THE UNNAMED COLUMN IN POSITION 1 ###############
     ###### ALSO FOR THE RANDOM FOREST I NEED TO MAKE SURE I DO NOT DUMMIE EVERYTHING ########
 
