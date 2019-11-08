@@ -56,7 +56,7 @@ class Preprocessing:
         OUTPUT: dataframe
         '''
         dataframe = dataframe[self.initial_list]
-        dataframe = dataframe[dataframe.columns[0]!=self.initial_list[0]]
+        dataframe = dataframe[dataframe['funded_amnt']!='funded_amnt']
 
         for items in self.convert_to_numeric:
             dataframe[items] = pd.to_numeric(dataframe[items])
@@ -95,7 +95,7 @@ class Preprocessing:
         OUTPUT: dataframe
         '''
         dataframe = dataframe[self.initial_list]
-        dataframe = dataframe[dataframe.columns[0]!=self.initial_list[0]]
+        dataframe = dataframe[dataframe['funded_amnt']!='funded_amnt']
 
         for items in self.convert_to_numeric:
             dataframe[items] = pd.to_numeric(dataframe[items])
@@ -134,7 +134,7 @@ class Preprocessing:
         OUTPUT: dataframe
         '''
         dataframe = dataframe[self.initial_list]
-        dataframe = dataframe[dataframe.columns[0]!=self.initial_list[0]]
+        dataframe = dataframe[dataframe['funded_amnt']!='funded_amnt']
 
         for items in self.convert_to_numeric:
             dataframe[items] = pd.to_numeric(dataframe[items])
