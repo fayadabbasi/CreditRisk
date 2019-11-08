@@ -53,7 +53,7 @@ if __name__ == '__main__':
     #### feature importance search
 
     r = RandFor()
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.7, class_weight={0:20, 1:1}, n_estimators=300, max_depth=None)
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.9, class_weight={0:30, 1:1}, n_estimators=100, max_depth=None)
     
     print("The random forest classifier score is is: {:3%}".format(score))
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
