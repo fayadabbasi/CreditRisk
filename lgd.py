@@ -7,55 +7,7 @@ import scipy.stats as stat
 from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.metrics import mean_squared_error, r2_score
 
-features_all = ['grade:A',
-'grade:B',
-'grade:C',
-'grade:D',
-'grade:E',
-'grade:F',
-'grade:G',
-'home_ownership:MORTGAGE',
-'home_ownership:NONE',
-'home_ownership:OTHER',
-'home_ownership:OWN',
-'home_ownership:RENT',
-'verification_status:Not Verified',
-'verification_status:Source Verified',
-'verification_status:Verified',
-'purpose:car',
-'purpose:credit_card',
-'purpose:debt_consolidation',
-'purpose:educational',
-'purpose:home_improvement',
-'purpose:house',
-'purpose:major_purchase',
-'purpose:medical',
-'purpose:moving',
-'purpose:other',
-'purpose:renewable_energy',
-'purpose:small_business',
-'purpose:vacation',
-'purpose:wedding',
-'initial_list_status:f',
-'initial_list_status:w',
-'term_int',
-'emp_length_int',
-'funded_amnt',
-'installment',
-'annual_inc',
-'dti',
-'delinq_2yrs',
-'inq_last_6mths',
-'open_acc',
-'pub_rec',
-'total_acc',
-'acc_now_delinq']
-
-features_reference_cat = ['grade:G',
-'home_ownership:RENT',
-'verification_status:Verified',
-'purpose:credit_card',
-'initial_list_status:f']
+features_all = []
 
 
 class LogisticRegression_with_p_values:
@@ -116,146 +68,148 @@ class LinearRegression(linear_model.LinearRegression):
         self.p = np.squeeze(2 * (1 - stat.t.cdf(np.abs(self.t), y.shape[0] - X.shape[1])))
         return self
 
+class LGD:
+    def __init__(self, dummies):
+        self.dummies = ['grade','home_ownership','verification_status','purpose','initial_list_status']
 
-def action(loan_data_preprocessed, tr=0.7):
-    loan_data_defaults = loan_data_preprocessed[loan_data_preprocessed['loan_status'].isin(['Charged Off','Does not meet the credit policy. Status:Charged Off'])]
+    def action(self, loan_data_preprocessed, tr=0.7):
+        
+        loan_data_defaults = loan_data_preprocessed[loan_data_preprocessed['loan_status'].isin(['Charged Off','Does not meet the credit policy. Status:Charged Off'])]
 
-    if 'mths_since_last_delinq' in loan_data_preprocessed:
-        loan_data_defaults['mths_since_last_delinq'].fillna(0, inplace = True)
-    else:
-        pass
+        if 'mths_since_last_delinq' in loan_data_preprocessed:
+            loan_data_defaults['mths_since_last_delinq'].fillna(0, inplace = True)
+        
 
-    if 'mths_since_last_record' in loan_data_preprocessed:
-        loan_data_defaults['mths_since_last_record'].fillna(0, inplace=True)
-    else:
-        pass
+        if 'mths_since_last_record' in loan_data_preprocessed:
+            loan_data_defaults['mths_since_last_record'].fillna(0, inplace=True)
+        
 
-    loan_data_defaults['recoveries'] = pd.to_numeric(loan_data_defaults['recoveries'])
-    loan_data_defaults['recovery_rate'] = loan_data_defaults['recoveries'] / loan_data_defaults['funded_amnt']
+        loan_data_defaults['recoveries'] = pd.to_numeric(loan_data_defaults['recoveries'])
+        loan_data_defaults['recovery_rate'] = loan_data_defaults['recoveries'] / loan_data_defaults['funded_amnt']
+        
+        loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] > 1, 1, loan_data_defaults['recovery_rate'])
+        loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] < 0, 0, loan_data_defaults['recovery_rate'])
+
+        loan_data_defaults['tot_rec_prncp'] = pd.to_numeric(loan_data_defaults['total_rec_prncp'])
+
+        loan_data_defaults['CCF'] = (loan_data_defaults['funded_amnt'].astype('float')) - loan_data_defaults['total_rec_prncp'].astype('float') / loan_data_defaults['funded_amnt'].astype('float')
+
+        loan_data_defaults['recovery_rate_0_1'] = np.where(loan_data_defaults['recovery_rate'] == 0, 0, 1)
+
+        lgd_inputs_stage_1_train, lgd_inputs_stage_1_test, lgd_targets_stage_1_train, lgd_targets_stage_1_test = train_test_split(loan_data_defaults.drop(['recovery_rate','recovery_rate_0_1', 'CCF'], axis = 1), loan_data_defaults['recovery_rate_0_1'], test_size = 0.2, random_state = 42)
+
+        def loan_data_d(dataframe, dlist):    
+            for items in dlist:
+                loan_data_dummies = [pd.get_dummies(dataframe[items], prefix=items,prefix_sep=':')]
+                loan_data_dummies = pd.concat(loan_data_dummies, axis=1)
+                dataframe = pd.concat([dataframe, loan_data_dummies], axis = 1)
+            return dataframe
+        
     
-    loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] > 1, 1, loan_data_defaults['recovery_rate'])
-    loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] < 0, 0, loan_data_defaults['recovery_rate'])
+        lgd_inputs_stage_1_train = loan_data_d(lgd_inputs_stage_1_train, self.dummies)
+        lgd_inputs_stage_1_test = loan_data_d(lgd_inputs_stage_1_test, self.dummies)
 
-    loan_data_defaults['tot_rec_prncp'] = pd.to_numeric(loan_data_defaults['total_rec_prncp'])
+        lgd_inputs_stage_1_train = lgd_inputs_stage_1_train[features_all]
+        lgd_inputs_stage_1_train = lgd_inputs_stage_1_train.drop(features_reference_cat, axis = 1)
 
-    loan_data_defaults['CCF'] = (loan_data_defaults['funded_amnt'].astype('float')) - loan_data_defaults['total_rec_prncp'].astype('float') / loan_data_defaults['funded_amnt'].astype('float')
+        obj_conversion = ['dti','delinq_2yrs','inq_last_6mths','pub_rec','total_acc','acc_now_delinq']
+        
+        for items in obj_conversion:
+            lgd_inputs_stage_1_train[items] = pd.to_numeric(lgd_inputs_stage_1_train[items])
+        for items in obj_conversion:
+            lgd_inputs_stage_1_test[items] = pd.to_numeric(lgd_inputs_stage_1_test[items])
 
-    loan_data_defaults['recovery_rate_0_1'] = np.where(loan_data_defaults['recovery_rate'] == 0, 0, 1)
-
-    lgd_inputs_stage_1_train, lgd_inputs_stage_1_test, lgd_targets_stage_1_train, lgd_targets_stage_1_test = train_test_split(loan_data_defaults.drop(['recovery_rate','recovery_rate_0_1', 'CCF'], axis = 1), loan_data_defaults['recovery_rate_0_1'], test_size = 0.2, random_state = 42)
-
-    def loan_data_d(dataframe, dlist):    
-        for items in dlist:
-            loan_data_dummies = [pd.get_dummies(dataframe[items], prefix=items,prefix_sep=':')]
-            loan_data_dummies = pd.concat(loan_data_dummies, axis=1)
-            dataframe = pd.concat([dataframe, loan_data_dummies], axis = 1)
-        return dataframe
-    
-    dummies = ['grade','home_ownership','verification_status','purpose','initial_list_status']
-    lgd_inputs_stage_1_train = loan_data_d(lgd_inputs_stage_1_train, dummies)
-    lgd_inputs_stage_1_test = loan_data_d(lgd_inputs_stage_1_test, dummies)
-
-    lgd_inputs_stage_1_train = lgd_inputs_stage_1_train[features_all]
-    lgd_inputs_stage_1_train = lgd_inputs_stage_1_train.drop(features_reference_cat, axis = 1)
-
-    obj_conversion = ['dti','delinq_2yrs','inq_last_6mths','pub_rec','total_acc','acc_now_delinq']
-    for items in obj_conversion:
-        lgd_inputs_stage_1_train[items] = pd.to_numeric(lgd_inputs_stage_1_train[items])
-    for items in obj_conversion:
-        lgd_inputs_stage_1_test[items] = pd.to_numeric(lgd_inputs_stage_1_test[items])
-
-    reg_lgd_st_1 = LogisticRegression_with_p_values()
-    reg_lgd_st_1.fit(lgd_inputs_stage_1_train, lgd_targets_stage_1_train)
-    feature_name = lgd_inputs_stage_1_train.columns.values
+        reg_lgd_st_1 = LogisticRegression_with_p_values()
+        reg_lgd_st_1.fit(lgd_inputs_stage_1_train, lgd_targets_stage_1_train)
+        feature_name = lgd_inputs_stage_1_train.columns.values
 
 
-    summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
-    summary_table['Coefficients'] = np.transpose(reg_lgd_st_1.coef_)
-    summary_table.index = summary_table.index + 1
-    summary_table.loc[0] = ['Intercept', reg_lgd_st_1.intercept_[0]]
-    summary_table = summary_table.sort_index()
-    p_values = reg_lgd_st_1.p_values
-    p_values = np.append(np.nan,np.array(p_values))
-    summary_table['p_values'] = p_values
-    
-    lgd_inputs_stage_1_test = lgd_inputs_stage_1_test[features_all]
+        summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
+        summary_table['Coefficients'] = np.transpose(reg_lgd_st_1.coef_)
+        summary_table.index = summary_table.index + 1
+        summary_table.loc[0] = ['Intercept', reg_lgd_st_1.intercept_[0]]
+        summary_table = summary_table.sort_index()
+        p_values = reg_lgd_st_1.p_values
+        p_values = np.append(np.nan,np.array(p_values))
+        summary_table['p_values'] = p_values
+        
+        lgd_inputs_stage_1_test = lgd_inputs_stage_1_test[features_all]
 
-    lgd_inputs_stage_1_test = lgd_inputs_stage_1_test.drop(features_reference_cat, axis = 1)
-    y_hat_test_lgd_stage_1 = reg_lgd_st_1.model.predict(lgd_inputs_stage_1_test)
+        lgd_inputs_stage_1_test = lgd_inputs_stage_1_test.drop(features_reference_cat, axis = 1)
+        y_hat_test_lgd_stage_1 = reg_lgd_st_1.model.predict(lgd_inputs_stage_1_test)
 
-    y_hat_test_proba_lgd_stage_1 = reg_lgd_st_1.model.predict_proba(lgd_inputs_stage_1_test)
+        y_hat_test_proba_lgd_stage_1 = reg_lgd_st_1.model.predict_proba(lgd_inputs_stage_1_test)
 
-    y_hat_test_proba_lgd_stage_1 = y_hat_test_proba_lgd_stage_1[: ][: , 1]
+        y_hat_test_proba_lgd_stage_1 = y_hat_test_proba_lgd_stage_1[: ][: , 1]
 
-    lgd_targets_stage_1_test_temp = lgd_targets_stage_1_test
-    lgd_targets_stage_1_test_temp.reset_index(drop = True, inplace = True)
+        lgd_targets_stage_1_test_temp = lgd_targets_stage_1_test
+        lgd_targets_stage_1_test_temp.reset_index(drop = True, inplace = True)
 
-    df_actual_predicted_probs = pd.concat([lgd_targets_stage_1_test_temp, pd.DataFrame(y_hat_test_proba_lgd_stage_1)], axis = 1)
+        df_actual_predicted_probs = pd.concat([lgd_targets_stage_1_test_temp, pd.DataFrame(y_hat_test_proba_lgd_stage_1)], axis = 1)
 
-    df_actual_predicted_probs.columns = ['lgd_targets_stage_1_test', 'y_hat_test_proba_lgd_stage_1']
+        df_actual_predicted_probs.columns = ['lgd_targets_stage_1_test', 'y_hat_test_proba_lgd_stage_1']
 
-    df_actual_predicted_probs.index = lgd_inputs_stage_1_test.index
+        df_actual_predicted_probs.index = lgd_inputs_stage_1_test.index
 
-    df_actual_predicted_probs['y_hat_test_lgd_stage_1'] = np.where(df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1'] > tr, 1, 0)
+        df_actual_predicted_probs['y_hat_test_lgd_stage_1'] = np.where(df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1'] > tr, 1, 0)
 
-    fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1']
-    auroc = roc_auc_score(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1'])
+        fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1']
+        auroc = roc_auc_score(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_proba_lgd_stage_1'])
 
-    return summary_table, fpr, tpr, thresholds, auroc, df_actual_predicted_probs
+        return summary_table, fpr, tpr, thresholds, auroc, df_actual_predicted_probs
 
 
-def action_2():
-    lgd_stage_2_data = loan_data_defaults[loan_data_defaults['recovery_rate_0_1'] == 1]
-    lgd_stage_2_data = loan_data_d(lgd_stage_2_data, self.dummies)
-    lgd_inputs_stage_2_train, lgd_inputs_stage_2_test, lgd_targets_stage_2_train, lgd_targets_stage_2_test = train_test_split(lgd_stage_2_data.drop(['recovery_rate','recovery_rate_0_1', 'CCF'], axis = 1), lgd_stage_2_data['recovery_rate'], test_size = 0.2, random_state = 42)
+    def action_2():
+        lgd_stage_2_data = loan_data_defaults[loan_data_defaults['recovery_rate_0_1'] == 1]
+        lgd_stage_2_data = loan_data_d(lgd_stage_2_data, self.dummies)
+        lgd_inputs_stage_2_train, lgd_inputs_stage_2_test, lgd_targets_stage_2_train, lgd_targets_stage_2_test = train_test_split(lgd_stage_2_data.drop(['recovery_rate','recovery_rate_0_1', 'CCF'], axis = 1), lgd_stage_2_data['recovery_rate'], test_size = 0.2, random_state = 42)
 
-    lgd_inputs_stage_2_train = lgd_inputs_stage_2_train[features_all]
-    lgd_inputs_stage_2_train = lgd_inputs_stage_2_train.drop(features_reference_cat, axis = 1)
+        lgd_inputs_stage_2_train = lgd_inputs_stage_2_train[features_all]
+        lgd_inputs_stage_2_train = lgd_inputs_stage_2_train.drop(features_reference_cat, axis = 1)
 
-    for items in obj_conversion:
-        lgd_inputs_stage_2_train[items] = pd.to_numeric(lgd_inputs_stage_2_train[items])
+        for items in obj_conversion:
+            lgd_inputs_stage_2_train[items] = pd.to_numeric(lgd_inputs_stage_2_train[items])
 
-    for items in obj_conversion:
-        lgd_inputs_stage_2_test[items] = pd.to_numeric(lgd_inputs_stage_2_test[items])
+        for items in obj_conversion:
+            lgd_inputs_stage_2_test[items] = pd.to_numeric(lgd_inputs_stage_2_test[items])
 
-    reg_lgd_st_2 = LinearRegression()
-    reg_lgd_st_2.fit(lgd_inputs_stage_2_train, lgd_targets_stage_2_train)
+        reg_lgd_st_2 = LinearRegression()
+        reg_lgd_st_2.fit(lgd_inputs_stage_2_train, lgd_targets_stage_2_train)
 
-    feature_name = lgd_inputs_stage_2_train.columns.values
+        feature_name = lgd_inputs_stage_2_train.columns.values
 
-    summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
-    summary_table['Coefficients'] = np.transpose(reg_lgd_st_2.coef_)
-    summary_table.index = summary_table.index + 1
-    summary_table.loc[0] = ['Intercept', reg_lgd_st_2.intercept_]
-    summary_table = summary_table.sort_index()
-    p_values = reg_lgd_st_2.p
-    p_values = np.append(np.nan,np.array(p_values))
-    summary_table['p_values'] = p_values.round(3)
+        summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
+        summary_table['Coefficients'] = np.transpose(reg_lgd_st_2.coef_)
+        summary_table.index = summary_table.index + 1
+        summary_table.loc[0] = ['Intercept', reg_lgd_st_2.intercept_]
+        summary_table = summary_table.sort_index()
+        p_values = reg_lgd_st_2.p
+        p_values = np.append(np.nan,np.array(p_values))
+        summary_table['p_values'] = p_values.round(3)
 
-    lgd_inputs_stage_2_test = lgd_inputs_stage_2_test[features_all]
-    lgd_inputs_stage_2_test = lgd_inputs_stage_2_test.drop(features_reference_cat, axis = 1)
+        lgd_inputs_stage_2_test = lgd_inputs_stage_2_test[features_all]
+        lgd_inputs_stage_2_test = lgd_inputs_stage_2_test.drop(features_reference_cat, axis = 1)
 
-    y_hat_test_lgd_stage_2 = reg_lgd_st_2.predict(lgd_inputs_stage_2_test)
+        y_hat_test_lgd_stage_2 = reg_lgd_st_2.predict(lgd_inputs_stage_2_test)
 
-    lgd_targets_stage_2_test_temp = lgd_targets_stage_2_test
+        lgd_targets_stage_2_test_temp = lgd_targets_stage_2_test
 
-    lgd_targets_stage_2_test_temp = lgd_targets_stage_2_test_temp.reset_index(drop = True)
+        lgd_targets_stage_2_test_temp = lgd_targets_stage_2_test_temp.reset_index(drop = True)
 
-def combined_action():
-    y_hat_test_lgd_stage_2_all = reg_lgd_st_2.predict(lgd_inputs_stage_1_test)
-    y_hat_test_lgd_stage_2_all
-    y_hat_test_lgd = y_hat_test_lgd_stage_1 * y_hat_test_lgd_stage_2_all
-    y_hat_test_lgd = np.where(y_hat_test_lgd < 0, 0, y_hat_test_lgd)
-    y_hat_test_lgd = np.where(y_hat_test_lgd > 1, 1, y_hat_test_lgd)
+    def combined_action():
+        y_hat_test_lgd_stage_2_all = reg_lgd_st_2.predict(lgd_inputs_stage_1_test)
+        y_hat_test_lgd_stage_2_all
+        y_hat_test_lgd = y_hat_test_lgd_stage_1 * y_hat_test_lgd_stage_2_all
+        y_hat_test_lgd = np.where(y_hat_test_lgd < 0, 0, y_hat_test_lgd)
+        y_hat_test_lgd = np.where(y_hat_test_lgd > 1, 1, y_hat_test_lgd)
 
 
 if __name__ == '__main__':
     '''
-    loan_data_preprocessed_backup = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/merged.csv', skiprows=1, low_memory=False)
+    loan_data_preprocessed_backup = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/df_preprocessed.csv',low_memory=False)
     loan_data_preprocessed = loan_data_preprocessed_backup.copy()
-    prep = p.Preprocessing()
-    loan_data_preprocessed = prep.action_LGD(loan_data_preprocessed)
-    # from the first action
+    
+    
     pd.crosstab(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_lgd_stage_1'], rownames = ['Actual'], colnames = ['Predicted'])
     print(auroc)
     # from the second action

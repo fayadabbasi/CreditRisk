@@ -38,11 +38,6 @@ class RandFor:
 
 
 if __name__ == '__main__':
-    
-    # X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
-    # X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
-    # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train_tt.csv', header=None)
-    # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test_tt.csv', header=None)
 
     X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe_tt.csv')
     X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe_tt.csv')
@@ -54,6 +49,8 @@ if __name__ == '__main__':
 
     ###### NEED TO CHECK FOR THE UNNAMED COLUMN IN POSITION 1 ###############
     ###### ALSO FOR THE RANDOM FOREST I NEED TO MAKE SURE I DO NOT DUMMIE EVERYTHING ########
+    
+    #### feature importance search
 
     r = RandFor()
     df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.8, class_weight={0:40, 1:1}, n_estimators=200, max_depth=None)

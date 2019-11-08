@@ -62,8 +62,6 @@ class WOE:
             df_inputs_prepr['loan_amnt_factor:7'] = np.where((df_inputs_prepr['loan_amnt_factor'].isin(range(32100,36050))),1,0)
             df_inputs_prepr['loan_amnt_factor:8'] = np.where((df_inputs_prepr['loan_amnt_factor'].isin(range(36050,int(df_inputs_prepr['loan_amnt'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['loan_amnt', 'loan_amnt_factor'], axis=1)
-        else:
-            pass 
 
         if 'annual_inc' in X_train:
             df_inputs_prepr['annual_inc_factor'] = pd.cut(df_inputs_prepr['annual_inc'],100)
@@ -77,8 +75,7 @@ class WOE:
             df_inputs_prepr['annual_inc_factor:6'] = np.where((df_inputs_prepr['annual_inc_factor'].isin(range(112000,126000))),1,0)
             df_inputs_prepr['annual_inc_factor:7'] = np.where((df_inputs_prepr['annual_inc_factor'].isin(range(126000,int(df_inputs_prepr['annual_inc'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['annual_inc','annual_inc_factor'], axis=1)
-        else:
-            pass
+        
         if 'int_rate_int' in X_train:
             df_inputs_prepr['int_rate_factor_f'] = pd.cut(df_inputs_prepr['int_rate_int'],10)
             df_inputs_prepr['int_rate_factor:1'] = np.where((df_inputs_prepr['int_rate_factor_f'].isin(range(8))),1,0)
@@ -93,8 +90,6 @@ class WOE:
             df_inputs_prepr['int_rate_factor:10'] = np.where((df_inputs_prepr['int_rate_factor_f'].isin(range(25,27))),1,0)
             df_inputs_prepr['int_rate_factor:11'] = np.where((df_inputs_prepr['int_rate_factor_f'].isin(range(27,int(df_inputs_prepr['int_rate_int'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['int_rate_int','int_rate_factor_f'], axis=1)
-        else: 
-            pass
 
         if 'revol_util_int' in X_train:
             df_inputs_prepr['revol_util_factor_f'] = pd.cut(df_inputs_prepr['revol_util_int'],30)
@@ -108,8 +103,6 @@ class WOE:
             df_inputs_prepr['revol_util_factor:8'] = np.where((df_inputs_prepr['revol_util_factor_f'].isin(range(84,96))),1,0)
             df_inputs_prepr['revol_util_factor:9'] = np.where((df_inputs_prepr['revol_util_factor_f'].isin(range(96,int(df_inputs_prepr['revol_util_int'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['revol_util_int','revol_util_factor_f'], axis=1)
-        else:
-            pass
 
         if 'open_acc' in X_train:
             df_inputs_prepr['open_acc_t'] = pd.cut(df_inputs_prepr['open_acc'],30)
@@ -121,8 +114,6 @@ class WOE:
             df_inputs_prepr['open_acc:6'] = np.where((df_inputs_prepr['open_acc_t'].isin(range(20,30))),1,0)
             df_inputs_prepr['open_acc:9'] = np.where((df_inputs_prepr['open_acc_t'].isin(range(30,int(df_inputs_prepr['open_acc'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['open_acc','open_acc_t'], axis=1)
-        else:
-            pass
 
         if 'zip_code_int' in X_train:
             df_inputs_prepr['zip_code_f'] = pd.cut(df_inputs_prepr['zip_code_int'],5)
@@ -132,8 +123,7 @@ class WOE:
             df_inputs_prepr['zip_code:4'] = np.where((df_inputs_prepr['zip_code_f'].isin(range(600,800))),1,0)
             df_inputs_prepr['zip_code:5'] = np.where((df_inputs_prepr['zip_code_f'].isin(range(800,int(df_inputs_prepr['zip_code_int'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['zip_code_int','zip_code_f'], axis=1)
-        else:
-            pass
+        
         if 'tot_cur_bal' in X_train:
             df_inputs_prepr['tot_cur_bal_t'] = pd.cut(df_inputs_prepr['tot_cur_bal'],300)
             df_inputs_prepr['tot_cur_bal:1'] = np.where((df_inputs_prepr['tot_cur_bal_t'].isin(range(30000))),1,0)
@@ -146,8 +136,6 @@ class WOE:
             df_inputs_prepr['tot_cur_bal:8'] = np.where((df_inputs_prepr['tot_cur_bal_t'].isin(range(500000,750000))),1,0)
             df_inputs_prepr['tot_cur_bal:9'] = np.where((df_inputs_prepr['tot_cur_bal_t'].isin(range(750000,int(df_inputs_prepr['tot_cur_bal'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['tot_cur_bal','tot_cur_bal_t'], axis=1)
-        else:
-            pass
 
         if 'addr_state:OK' in X_train:
             df_inputs_prepr['addr_state:OK_AR_LA_MS'] = sum([df_inputs_prepr['addr_state:OK'],df_inputs_prepr['addr_state:AR'],df_inputs_prepr['addr_state:LA'],df_inputs_prepr['addr_state:MS']])
@@ -166,8 +154,6 @@ class WOE:
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:ND','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
-        else:
-            pass
 
         if 'mths_since_issue_d' in X_train:
             df_inputs_prepr['mths_since_issue_d_factor:'+'<'+'38'] = np.where(df_inputs_prepr['mths_since_issue_d'].isin(range(38)),1,0)
@@ -178,9 +164,6 @@ class WOE:
             df_inputs_prepr['mths_since_issue_d_factor:'+'70-85'] = np.where(df_inputs_prepr['mths_since_issue_d'].isin(range(70,85)),1,0)
             df_inputs_prepr['mths_since_issue_d_factor:'+'85-95'] = np.where(df_inputs_prepr['mths_since_issue_d'].isin(range(85,95)),1,0)
             df_inputs_prepr['mths_since_issue_d_factor:'+'95+'] = np.where(df_inputs_prepr['mths_since_issue_d'].isin(range(95,int(df_inputs_prepr['mths_since_issue_d'].max()))),1,0)
-        else:
-            pass 
-
 
         '''
         NOW DO THE SAME FOR THE TEST SET
@@ -198,8 +181,6 @@ class WOE:
             df_inputs_prepr_t['loan_amnt_factor:7'] = np.where((df_inputs_prepr_t['loan_amnt_factor'].isin(range(32100,36050))),1,0)
             df_inputs_prepr_t['loan_amnt_factor:8'] = np.where((df_inputs_prepr_t['loan_amnt_factor'].isin(range(36050,int(df_inputs_prepr_t['loan_amnt'].max())))),1,0)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['loan_amnt', 'loan_amnt_factor'], axis=1)
-        else:
-            pass
 
         if 'annual_inc' in X_test:
             df_inputs_prepr_t['annual_inc_factor'] = pd.cut(df_inputs_prepr_t['annual_inc'],100)
@@ -211,8 +192,6 @@ class WOE:
             df_inputs_prepr_t['annual_inc_factor:6'] = np.where((df_inputs_prepr_t['annual_inc_factor'].isin(range(112000,126000))),1,0)
             df_inputs_prepr_t['annual_inc_factor:7'] = np.where((df_inputs_prepr_t['annual_inc_factor'].isin(range(126000,int(df_inputs_prepr_t['annual_inc'].max())))),1,0)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['annual_inc','annual_inc_factor'], axis=1)
-        else:
-            pass
 
         if 'int_rate_int' in X_test:
             df_inputs_prepr_t['int_rate_factor_f'] = pd.cut(df_inputs_prepr_t['int_rate_int'],10)
@@ -228,8 +207,6 @@ class WOE:
             df_inputs_prepr_t['int_rate_factor:10'] = np.where((df_inputs_prepr_t['int_rate_factor_f'].isin(range(25,27))),1,0)
             df_inputs_prepr_t['int_rate_factor:11'] = np.where((df_inputs_prepr_t['int_rate_factor_f'].isin(range(27,int(df_inputs_prepr_t['int_rate_int'].max())))),1,0)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['int_rate_int','int_rate_factor_f'], axis=1)
-        else:
-            pass 
 
         if 'revol_util_int' in X_test:
             df_inputs_prepr_t['revol_util_factor_f'] = pd.cut(df_inputs_prepr_t['revol_util_int'],30)
@@ -243,8 +220,6 @@ class WOE:
             df_inputs_prepr_t['revol_util_factor:8'] = np.where((df_inputs_prepr_t['revol_util_factor_f'].isin(range(84,96))),1,0)
             df_inputs_prepr_t['revol_util_factor:9'] = np.where((df_inputs_prepr_t['revol_util_factor_f'].isin(range(96,int(df_inputs_prepr_t['revol_util_int'].max())))),1,0)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['revol_util_int','revol_util_factor_f'], axis=1)
-        else:
-            pass 
 
         if 'open_acc' in X_test:
             df_inputs_prepr_t['open_acc_t'] = pd.cut(df_inputs_prepr_t['open_acc'],30)
@@ -255,9 +230,7 @@ class WOE:
             df_inputs_prepr_t['open_acc:5'] = np.where((df_inputs_prepr_t['open_acc_t'].isin(range(15,20))),1,0)
             df_inputs_prepr_t['open_acc:6'] = np.where((df_inputs_prepr_t['open_acc_t'].isin(range(20,30))),1,0)
             df_inputs_prepr_t['open_acc:9'] = np.where((df_inputs_prepr_t['open_acc_t'].isin(range(30,int(df_inputs_prepr_t['open_acc'].max())))),1,0)
-            df_inputs_prepr_t = df_inputs_prepr_t.drop(['open_acc','open_acc_t'], axis=1)
-        else:
-            pass 
+            df_inputs_prepr_t = df_inputs_prepr_t.drop(['open_acc','open_acc_t'], axis=1) 
 
         if 'zip_code_int' in X_test:
             df_inputs_prepr_t['zip_code_f'] = pd.cut(df_inputs_prepr_t['zip_code_int'],5)
@@ -266,9 +239,7 @@ class WOE:
             df_inputs_prepr_t['zip_code:3'] = np.where((df_inputs_prepr_t['zip_code_f'].isin(range(400,600))),1,0)
             df_inputs_prepr_t['zip_code:4'] = np.where((df_inputs_prepr_t['zip_code_f'].isin(range(600,800))),1,0)
             df_inputs_prepr_t['zip_code:5'] = np.where((df_inputs_prepr_t['zip_code_f'].isin(range(800,int(df_inputs_prepr_t['zip_code_int'].max())))),1,0)
-            df_inputs_prepr_t = df_inputs_prepr_t.drop(['zip_code_int','zip_code_f'], axis=1)
-        else:
-            pass 
+            df_inputs_prepr_t = df_inputs_prepr_t.drop(['zip_code_int','zip_code_f'], axis=1) 
 
         if 'tot_cur_bal' in X_test:
             df_inputs_prepr_t['tot_cur_bal_t'] = pd.cut(df_inputs_prepr_t['tot_cur_bal'],300)
@@ -282,8 +253,6 @@ class WOE:
             df_inputs_prepr_t['tot_cur_bal:8'] = np.where((df_inputs_prepr_t['tot_cur_bal_t'].isin(range(500000,750000))),1,0)
             df_inputs_prepr_t['tot_cur_bal:9'] = np.where((df_inputs_prepr_t['tot_cur_bal_t'].isin(range(750000,int(df_inputs_prepr_t['tot_cur_bal'].max())))),1,0)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['tot_cur_bal','tot_cur_bal_t'], axis=1)
-        else:
-            pass  
 
         if 'addr_state:OK' in X_test:
             df_inputs_prepr_t['addr_state:OK_AR_LA_MS'] = sum([df_inputs_prepr_t['addr_state:OK'],df_inputs_prepr_t['addr_state:AR'],df_inputs_prepr_t['addr_state:LA'],df_inputs_prepr_t['addr_state:MS']])
@@ -302,8 +271,6 @@ class WOE:
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:ND','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
-        else:
-            pass
 
         if 'mths_since_issue_d' in X_train:
             df_inputs_prepr_t['mths_since_issue_d_factor:'+'<'+'38'] = np.where(df_inputs_prepr_t['mths_since_issue_d'].isin(range(38)),1,0)
@@ -314,8 +281,7 @@ class WOE:
             df_inputs_prepr_t['mths_since_issue_d_factor:'+'70-85'] = np.where(df_inputs_prepr_t['mths_since_issue_d'].isin(range(70,85)),1,0)
             df_inputs_prepr_t['mths_since_issue_d_factor:'+'85-95'] = np.where(df_inputs_prepr_t['mths_since_issue_d'].isin(range(85,95)),1,0)
             df_inputs_prepr_t['mths_since_issue_d_factor:'+'95+'] = np.where(df_inputs_prepr_t['mths_since_issue_d'].isin(range(95,int(df_inputs_prepr_t['mths_since_issue_d'].max()))),1,0)
-        else:
-            pass 
+        
         return df_inputs_prepr, df_inputs_prepr_t
 
             # have addr_state and mths_since_issue_d_factor to add
