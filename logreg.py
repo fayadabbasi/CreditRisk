@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
 
     lr = LogReg()
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = lr.logreg_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.8, class_weight={0:30, 1:1})
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = lr.logreg_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.5, class_weight={0:30, 1:1})
 
     print(df_actual_predicted_probs.shape)
     print(df_actual_predicted_probs.head(2))
