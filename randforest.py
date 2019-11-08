@@ -39,15 +39,15 @@ class RandFor:
 
 if __name__ == '__main__':
     
-    X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
-    X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
-    y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train_tt.csv', header=None)
-    y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test_tt.csv', header=None)
-    
-    # X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe.csv')
-    # X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe.csv')
-    # y_train = pd.read_csv('/home/ubuntu/y_train.csv', header=None)
-    # y_test = pd.read_csv('/home/ubuntu/y_test.csv', header=None)
+    # X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
+    # X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
+    # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train_tt.csv', header=None)
+    # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test_tt.csv', header=None)
+
+    X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe_tt.csv')
+    X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe_tt.csv')
+    y_train = pd.read_csv('/home/ubuntu/y_train_tt.csv', header=None)
+    y_test = pd.read_csv('/home/ubuntu/y_test_tt.csv', header=None)
 
     X_train_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'title'], axis=1, inplace=True)
     X_test_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'title'], axis=1, inplace=True)
@@ -62,4 +62,6 @@ if __name__ == '__main__':
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print(classification_report(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
+
+    
 

@@ -160,12 +160,11 @@ class WOE:
             df_inputs_prepr['addr_state:UT_GA_WI'] = sum([df_inputs_prepr['addr_state:UT'],df_inputs_prepr['addr_state:GA'],df_inputs_prepr['addr_state:WI']])
             df_inputs_prepr['addr_state:IL_CT_RI_MT'] = sum([df_inputs_prepr['addr_state:IL'],df_inputs_prepr['addr_state:CT'],df_inputs_prepr['addr_state:RI'],df_inputs_prepr['addr_state:MT']])
             df_inputs_prepr['addr_state:WY_KS_WA'] = sum([df_inputs_prepr['addr_state:WY'],df_inputs_prepr['addr_state:KS'],df_inputs_prepr['addr_state:WA']])
-            #df_inputs_prepr['addr_state:ND_CO'] = sum([df_inputs_prepr['addr_state:ND'],df_inputs_prepr['addr_state:CO']])
+            df_inputs_prepr['addr_state:ND_CO'] = sum([df_inputs_prepr['addr_state:ND'],df_inputs_prepr['addr_state:CO']])
             df_inputs_prepr['addr_state:SC_OR_DC'] = sum([df_inputs_prepr['addr_state:SC'],df_inputs_prepr['addr_state:OR'],df_inputs_prepr['addr_state:DC']])
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
             df_inputs_prepr = df_inputs_prepr.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
-            df_inputs_prepr = df_inputs_prepr.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
-            # dropped ND
+            df_inputs_prepr = df_inputs_prepr.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:ND','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
         else:
             pass
@@ -297,11 +296,11 @@ class WOE:
             df_inputs_prepr_t['addr_state:UT_GA_WI'] = sum([df_inputs_prepr_t['addr_state:UT'],df_inputs_prepr_t['addr_state:GA'],df_inputs_prepr_t['addr_state:WI']])
             df_inputs_prepr_t['addr_state:IL_CT_RI_MT'] = sum([df_inputs_prepr_t['addr_state:IL'],df_inputs_prepr_t['addr_state:CT'],df_inputs_prepr_t['addr_state:RI'],df_inputs_prepr_t['addr_state:MT']])
             df_inputs_prepr_t['addr_state:WY_KS_WA'] = sum([df_inputs_prepr_t['addr_state:WY'],df_inputs_prepr_t['addr_state:KS'],df_inputs_prepr_t['addr_state:WA']])
-            #df_inputs_prepr_t['addr_state:ND_CO'] = sum([df_inputs_prepr_t['addr_state:ND'],df_inputs_prepr_t['addr_state:CO']])
+            df_inputs_prepr_t['addr_state:ND_CO'] = sum([df_inputs_prepr_t['addr_state:ND'],df_inputs_prepr_t['addr_state:CO']])
             df_inputs_prepr_t['addr_state:SC_OR_DC'] = sum([df_inputs_prepr_t['addr_state:SC'],df_inputs_prepr_t['addr_state:OR'],df_inputs_prepr_t['addr_state:DC']])
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:OK','addr_state:AR','addr_state:LA','addr_state:MS','addr_state:NV','addr_state:NY','addr_state:HI','addr_state:FL','addr_state:NM','addr_state:MD','addr_state:MO','addr_state:PA','addr_state:NC'], axis=1)
             df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:IN','addr_state:NJ','addr_state:KY','addr_state:CA','addr_state:SD','addr_state:NE','addr_state:TN','addr_state:MI','addr_state:DE','addr_state:VA','addr_state:MN','addr_state:AZ','addr_state:TX','addr_state:OH','addr_state:UT'], axis=1)
-            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
+            df_inputs_prepr_t = df_inputs_prepr_t.drop(['addr_state:GA','addr_state:WI','addr_state:IL','addr_state:CT','addr_state:RI','addr_state:MT','addr_state:ND','addr_state:WY','addr_state:KS','addr_state:WA','addr_state:CO','addr_state:SC','addr_state:OR','addr_state:DC'], axis=1)
             # these are the individual states ['IA','AL','MA','NH','WV','ID','VT','ME']
         else:
             pass
@@ -322,8 +321,12 @@ class WOE:
             # have addr_state and mths_since_issue_d_factor to add
 
 if __name__ == '__main__':
-    X_train_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_ohe_tt.csv')
-    X_test_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_ohe_tt.csv')
+    # X_train_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_ohe_tt.csv')
+    # X_test_ohe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_ohe_tt.csv')
+    
+    X_train_ohe = pd.read_csv('/home/ubuntu/X_train_ohe_tt.csv')
+    X_test_ohe = pd.read_csv('/home/ubuntu/X_test_ohe_tt.csv')
+    
     # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train.csv')
     # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test.csv')
 
@@ -331,8 +334,10 @@ if __name__ == '__main__':
 
     X_train_woe_tt, X_test_woe_tt = woe.action_woe(X_train_ohe, X_test_ohe)
 
-    # print(X_train_woe.shape)
-    # print(X_test_woe.shape)
-    X_train_woe_tt.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
-    X_test_woe_tt.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
+    X_train_woe_tt.to_csv('/home/ubuntu/X_train_woe_tt.csv')
+    X_test_woe_tt.to_csv('/home/ubuntu/X_test_woe_tt.csv')
+    
+    # X_train_woe_tt.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
+    # X_test_woe_tt.to_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
+    
     print('MISSION ACCOMPLISHED!!!')
