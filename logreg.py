@@ -35,7 +35,6 @@ class LogReg:
         score = rg.score(xtr, ytr)
 
         df_actual_predicted_probs['yhat_test_proba'] = np.where(df_actual_predicted_probs['yhat_test_proba'] > tr, 1, 0)
-        # TODO: BE SURE TO FLIP BAD AND GOOD FROM 1 to 0
         
         fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba'])
         auroc = roc_auc_score(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba'])

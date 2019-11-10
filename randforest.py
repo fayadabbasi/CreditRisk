@@ -1,4 +1,5 @@
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import RandomizedSearchCV
 import pandas as pd  
 import numpy as np   
 from sklearn.metrics import confusion_matrix, classification_report
@@ -29,7 +30,6 @@ class RandFor:
         score = rfit.score(xtr, y_glb)
 
         df_actual_predicted_probs['yhat_test_proba'] = np.where(df_actual_predicted_probs['yhat_test'] > tr, 1, 0)
-        # TODO: BE SURE TO FLIP BAD AND GOOD FROM 1 to 0
 
         fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test'])
         auroc = roc_auc_score(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test'])
@@ -39,8 +39,8 @@ class RandFor:
 
 if __name__ == '__main__':
 
-    X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe_tt.csv')
-    X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe_tt.csv')
+    X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe_tt_cat.csv')
+    X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe_tt_cat.csv')
     y_train = pd.read_csv('/home/ubuntu/y_train_tt.csv', header=None)
     y_test = pd.read_csv('/home/ubuntu/y_test_tt.csv', header=None)
 
@@ -53,7 +53,8 @@ if __name__ == '__main__':
     #### feature importance search
 
     r = RandFor()
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.9, class_weight={0:30, 1:1}, n_estimators=100, max_depth=None)
+    
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.8, class_weight={0:30, 1:1}, n_estimators=100, max_depth=None)
     
     print("The random forest classifier score is is: {:3%}".format(score))
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))

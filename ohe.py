@@ -4,9 +4,9 @@ import numpy as np
 class OHE:
     def __init__(self):
         '''
-        initialize the list to be used for one hot encoding
+        initialize the list to be used for one hot encoding - these are the dtypes object which are the categorical features
         '''
-        self.ohe_list = ['grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state']
+        self.ohe_list = ['grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state', 'term_int','acc_now_delinq','chargeoff_within_12_mths','pub_rec_bankruptcies','collections_12_mths_ex_med','emp_length_int']
         
     
     def loan_data_d(self, dataframe, dlist):    
@@ -45,8 +45,6 @@ if __name__ == '__main__':
     ohe = OHE()
 
     X_train_ohe_tt, X_test_ohe_tt = ohe.action(X_train, X_test)
-    #X_train_ohe_tt.drop(['Unnamed: 0'], axis=1, inplace=True)
-    #X_test_ohe_tt.drop(['Unnamed: 0'], axis=1, inplace=True)
     
     X_train_ohe_tt.to_csv('/home/ubuntu/X_train_ohe_tt.csv')
     X_test_ohe_tt.to_csv('/home/ubuntu/X_test_ohe_tt.csv')
