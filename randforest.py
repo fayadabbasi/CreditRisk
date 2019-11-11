@@ -62,6 +62,7 @@ if __name__ == '__main__':
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print(classification_report(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
+    print(features.head(10))
 
 
 
