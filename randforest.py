@@ -59,6 +59,7 @@ if __name__ == '__main__':
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
     print(features.head(10))
 
-    model_rf = pd.to_csv('/home/ubuntu/rfit.csv')
+    model_rf.to_csv('/home/ubuntu/rfit.csv')
+    
 
 
