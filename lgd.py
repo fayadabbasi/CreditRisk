@@ -83,13 +83,14 @@ class LGD:
         if 'mths_since_last_record' in loan_data_preprocessed:
             loan_data_defaults['mths_since_last_record'].fillna(0, inplace=True)
         
-
+        # will need to add back in recoveries and funded_amnt
         loan_data_defaults['recoveries'] = pd.to_numeric(loan_data_defaults['recoveries'])
         loan_data_defaults['recovery_rate'] = loan_data_defaults['recoveries'] / loan_data_defaults['funded_amnt']
         
         loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] > 1, 1, loan_data_defaults['recovery_rate'])
         loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] < 0, 0, loan_data_defaults['recovery_rate'])
 
+        # will need to add back in tot_rec_prncp
         loan_data_defaults['tot_rec_prncp'] = pd.to_numeric(loan_data_defaults['total_rec_prncp'])
 
         loan_data_defaults['CCF'] = (loan_data_defaults['funded_amnt'].astype('float')) - loan_data_defaults['total_rec_prncp'].astype('float') / loan_data_defaults['funded_amnt'].astype('float')
@@ -122,16 +123,6 @@ class LGD:
         reg_lgd_st_1 = LogisticRegression_with_p_values()
         reg_lgd_st_1.fit(lgd_inputs_stage_1_train, lgd_targets_stage_1_train)
         feature_name = lgd_inputs_stage_1_train.columns.values
-
-
-        summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
-        summary_table['Coefficients'] = np.transpose(reg_lgd_st_1.coef_)
-        summary_table.index = summary_table.index + 1
-        summary_table.loc[0] = ['Intercept', reg_lgd_st_1.intercept_[0]]
-        summary_table = summary_table.sort_index()
-        p_values = reg_lgd_st_1.p_values
-        p_values = np.append(np.nan,np.array(p_values))
-        summary_table['p_values'] = p_values
         
         lgd_inputs_stage_1_test = lgd_inputs_stage_1_test[features_all]
 
@@ -206,10 +197,13 @@ class LGD:
 
 if __name__ == '__main__':
     '''
-    loan_data_preprocessed_backup = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/df_preprocessed.csv',low_memory=False)
-    loan_data_preprocessed = loan_data_preprocessed_backup.copy()
+    df_preprocessed_backup = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/df_preprocessed.csv',low_memory=False)
+    df_preprocessed = df_preprocessed_backup.copy()
     
+    ####### I can concatenate df_preprocessed with the X_train_woe_tt_cat or something like that #######
+
     
+        
     pd.crosstab(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_lgd_stage_1'], rownames = ['Actual'], colnames = ['Predicted'])
     print(auroc)
     # from the second action

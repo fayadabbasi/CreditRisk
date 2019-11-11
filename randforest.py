@@ -44,8 +44,8 @@ if __name__ == '__main__':
     y_train = pd.read_csv('/home/ubuntu/y_train_tt.csv', header=None)
     y_test = pd.read_csv('/home/ubuntu/y_test_tt.csv', header=None)
 
-    X_train_woe.drop(['Unnamed: 0.1', 'Unnamed: 0'], axis=1, inplace=True)
-    X_test_woe.drop(['Unnamed: 0.1', 'Unnamed: 0'], axis=1, inplace=True)
+    X_train_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'loan_amnt_factor'], axis=1, inplace=True)
+    X_test_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'loan_amnt_factor'], axis=1, inplace=True)
 
     ###### NEED TO CHECK FOR THE UNNAMED COLUMN IN POSITION 1 ###############
     ###### ALSO FOR THE RANDOM FOREST I NEED TO MAKE SURE I DO NOT DUMMIE EVERYTHING ########
