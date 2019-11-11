@@ -80,11 +80,7 @@ class WOE:
             df_inputs_prepr['loan_amnt_factor:1'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(1817))),1,0)
             df_inputs_prepr['loan_amnt_factor:2'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(1817,7084))),1,0)
             df_inputs_prepr['loan_amnt_factor:3'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(7084,11034))),1,0)
-            df_inputs_prepr['loan_amnt_factor:4'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(11034,28150))),1,0)
-            df_inputs_prepr['loan_amnt_factor:5'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(28150,28160))),1,0)
-            df_inputs_prepr['loan_amnt_factor:6'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(28160,32100))),1,0)
-            df_inputs_prepr['loan_amnt_factor:7'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(32100,36050))),1,0)
-            df_inputs_prepr['loan_amnt_factor:8'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(36050,int(df_inputs_prepr['loan_amnt'].max())))),1,0)
+            df_inputs_prepr['loan_amnt_factor:4'] = np.where((df_inputs_prepr['loan_amnt'].isin(range(11034,int(df_inputs_prepr['loan_amnt'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['loan_amnt', 'loan_amnt_factor'], axis=1)
 
         if 'annual_inc' in X_train:
@@ -306,6 +302,39 @@ class WOE:
             df_inputs_prepr['total_rec_late_fee_factor:3'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(15,30))),1,0)
             df_inputs_prepr['total_rec_late_fee_factor:4'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(30,int(df_inputs_prepr['total_rec_late_fee'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['total_rec_late_fee', 'total_rec_late_fee_factor'], axis=1)
+        
+        if 'loan_amnt' in X_train:
+            df_inputs_prepr['total_rec_late_fee_factor'] = pd.cut(df_inputs_prepr['total_rec_late_fee'],8)
+            df_inputs_prepr['total_rec_late_fee_factor:1'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(1))),1,0)
+            df_inputs_prepr['total_rec_late_fee_factor:2'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(1,15))),1,0)
+            df_inputs_prepr['total_rec_late_fee_factor:3'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(15,30))),1,0)
+            df_inputs_prepr['total_rec_late_fee_factor:4'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(30,int(df_inputs_prepr['total_rec_late_fee'].max())))),1,0)
+            df_inputs_prepr = df_inputs_prepr.drop(['total_rec_late_fee', 'total_rec_late_fee_factor'], axis=1)
+
+        if 'acc_now_delinq' in X_train:
+            df_inputs_prepr['acc_now_delinq_factor'] = pd.cut(df_inputs_prepr['acc_now_delinq'],8)
+            df_inputs_prepr['acc_now_delinq_factor:1'] = np.where((df_inputs_prepr['acc_now_delinq'].isin(range(1))),1,0)
+            df_inputs_prepr['acc_now_delinq_factor:2'] = np.where((df_inputs_prepr['acc_now_delinq'].isin(range(1,int(df_inputs_prepr['acc_now_delinq'].max())))),1,0)
+            df_inputs_prepr = df_inputs_prepr.drop(['acc_now_delinq', 'acc_now_delinq_factor'], axis=1)
+        
+        if 'chargeoff_within_12_mths' in X_train:
+            df_inputs_prepr['chargeoff_within_12_mths_factor'] = pd.cut(df_inputs_prepr['chargeoff_within_12_mths'],8)
+            df_inputs_prepr['chargeoff_within_12_mths_factor:1'] = np.where((df_inputs_prepr['chargeoff_within_12_mths'].isin(range(1))),1,0)
+            df_inputs_prepr['chargeoff_within_12_mths_factor:2'] = np.where((df_inputs_prepr['chargeoff_within_12_mths'].isin(range(1,int(df_inputs_prepr['chargeoff_within_12_mths'].max())))),1,0)
+            df_inputs_prepr = df_inputs_prepr.drop(['chargeoff_within_12_mths', 'chargeoff_within_12_mths_factor'], axis=1)
+        
+        if 'pub_rec_bankruptcies' in X_train:
+            df_inputs_prepr['pub_rec_bankruptcies_factor'] = pd.cut(df_inputs_prepr['pub_rec_bankruptcies'],8)
+            df_inputs_prepr['pub_rec_bankruptcies_factor:1'] = np.where((df_inputs_prepr['pub_rec_bankruptcies'].isin(range(1))),1,0)
+            df_inputs_prepr['pub_rec_bankruptcies_factor:2'] = np.where((df_inputs_prepr['pub_rec_bankruptcies'].isin(range(1,int(df_inputs_prepr['pub_rec_bankruptcies'].max())))),1,0)
+            df_inputs_prepr = df_inputs_prepr.drop(['pub_rec_bankruptcies', 'pub_rec_bankruptcies_factor'], axis=1)
+
+        if 'collections_12_mths_ex_med' in X_train:
+            df_inputs_prepr['collections_12_mths_ex_med_factor'] = pd.cut(df_inputs_prepr['collections_12_mths_ex_med'],8)
+            df_inputs_prepr['collections_12_mths_ex_med_factor:1'] = np.where((df_inputs_prepr['collections_12_mths_ex_med'].isin(range(1))),1,0)
+            df_inputs_prepr['collections_12_mths_ex_med_factor:2'] = np.where((df_inputs_prepr['collections_12_mths_ex_med'].isin(range(1,int(df_inputs_prepr['collections_12_mths_ex_med'].max())))),1,0)
+            df_inputs_prepr = df_inputs_prepr.drop(['collections_12_mths_ex_med', 'collections_12_mths_ex_med_factor'], axis=1)
+
 
         return df_inputs_prepr
 

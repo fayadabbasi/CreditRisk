@@ -6,8 +6,7 @@ class OHE:
         '''
         initialize the list to be used for one hot encoding - these are the dtypes object which are the categorical features
         '''
-        self.ohe_list = ['grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state', 'term_int','acc_now_delinq','chargeoff_within_12_mths','pub_rec_bankruptcies','collections_12_mths_ex_med','emp_length_int']
-        
+        self.ohe_list = ['grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state', 'term_int','emp_length_int']
     
     def loan_data_d(self, dataframe, dlist):    
         '''
