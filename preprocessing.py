@@ -7,8 +7,8 @@ class Preprocessing:
         '''
         Initialize the important lists used for the subsequent functions
         '''
-        self.convert_to_numeric = ['funded_amnt','funded_amnt_inv','installment','dti','delinq_2yrs','fico_range_low','inq_last_6mths','pub_rec','revol_bal','total_acc','acc_now_delinq','chargeoff_within_12_mths','tax_liens','loan_amnt','annual_inc','open_acc','pub_rec_bankruptcies','all_util','collections_12_mths_ex_med','delinq_amnt','inq_fi','mths_since_last_delinq','num_accts_ever_120_pd','num_actv_rev_tl','num_rev_accts','total_rec_late_fee']
-        self.initial_list = ['funded_amnt','funded_amnt_inv','installment','dti','delinq_2yrs','fico_range_low','inq_last_6mths','pub_rec','revol_bal','total_acc','acc_now_delinq','chargeoff_within_12_mths','tax_liens','emp_length','term','grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state','loan_amnt','annual_inc','int_rate','revol_util','open_acc','zip_code','loan_status','pub_rec_bankruptcies','all_util','collections_12_mths_ex_med','delinq_amnt','inq_fi','mths_since_last_delinq','num_accts_ever_120_pd','num_actv_rev_tl','num_rev_accts','total_rec_late_fee']
+        self.convert_to_numeric = ['recoveries','tot_rec_prncp','funded_amnt','funded_amnt_inv','installment','dti','delinq_2yrs','fico_range_low','inq_last_6mths','pub_rec','revol_bal','total_acc','acc_now_delinq','chargeoff_within_12_mths','tax_liens','loan_amnt','annual_inc','open_acc','pub_rec_bankruptcies','all_util','collections_12_mths_ex_med','delinq_amnt','inq_fi','mths_since_last_delinq','num_accts_ever_120_pd','num_actv_rev_tl','num_rev_accts','total_rec_late_fee']
+        self.initial_list = ['recoveries','tot_rec_prncp','funded_amnt','funded_amnt_inv','installment','dti','delinq_2yrs','fico_range_low','inq_last_6mths','pub_rec','revol_bal','total_acc','acc_now_delinq','chargeoff_within_12_mths','tax_liens','emp_length','term','grade','sub_grade','home_ownership','verification_status','purpose','initial_list_status','addr_state','loan_amnt','annual_inc','int_rate','revol_util','open_acc','zip_code','loan_status','pub_rec_bankruptcies','all_util','collections_12_mths_ex_med','delinq_amnt','inq_fi','mths_since_last_delinq','num_accts_ever_120_pd','num_actv_rev_tl','num_rev_accts','total_rec_late_fee']
         
     
     def emp_length(self, dataframe,column='emp_length'):
@@ -105,12 +105,14 @@ class Preprocessing:
         for items in dataframe.columns:
             dataframe[items].fillna(0, inplace=True)
         
+        dataframe_lgd = dataframe[['recoveries', 'funded_amnt','total_rec_prncp', 'loan_status']]
         dataframe_current = dataframe[dataframe['loan_status']=='Current']
         dataframe = dataframe[dataframe['loan_status']!='Current']
+        dataframe.drop(['recoveries', 'total_rec_prncp'], axis=1, inplace=True)
         dataframe['good_bad'] = np.where(dataframe['loan_status'].isin(['Charged Off','Default','Does not meet the credit policy. Status:Fully Paid','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)','Late (16-30 days)']),1,0)
 
         
-        return dataframe, dataframe_current
+        return dataframe, dataframe_current, dataframe_lgd
 
 if __name__ == '__main__':
     
@@ -118,22 +120,27 @@ if __name__ == '__main__':
     df = df_backup.copy()
 
     prep = Preprocessing()
-    df, current = prep.action(df)
+    df, current, lgd = prep.action(df)
     
-    df_preprocessed = df
+    #df_preprocessed = df
 
     #TODO: send to postgres
 
-    X_train_tt, X_test_tt, y_train_tt, y_test_tt = tts(df.drop(['loan_status','good_bad'], axis=1), df['good_bad'], test_size=0.25, random_state=42)
+    #X_train_tt, X_test_tt, y_train_tt, y_test_tt = tts(df.drop(['loan_status','good_bad'], axis=1), df['good_bad'], test_size=0.25, random_state=42)
     
-    df_preprocessed.to_csv('/home/ubuntu/df_preprocessed.csv')
+    # df_preprocessed.to_csv('/home/ubuntu/df_preprocessed.csv')
 
-    X_train_tt.to_csv('/home/ubuntu/X_train_tt.csv')
-    y_train_tt.to_csv('/home/ubuntu/y_train_tt.csv')
-    X_test_tt.to_csv('/home/ubuntu/X_test_tt.csv')
-    y_test_tt.to_csv('/home/ubuntu/y_test_tt.csv')
+    # X_train_tt.to_csv('/home/ubuntu/X_train_tt.csv')
+    # y_train_tt.to_csv('/home/ubuntu/y_train_tt.csv')
+    # X_test_tt.to_csv('/home/ubuntu/X_test_tt.csv')
+    # y_test_tt.to_csv('/home/ubuntu/y_test_tt.csv')
 
-    current.to_csv('/home/ubuntu/current.csv')
-
+    # current.to_csv('/home/ubuntu/current.csv')
+    X_train_lgd, X_test_lgd, y_train_lgd, y_test_lgd = tts(lgd.drop(['loan_status'], axis=1), lgd['loan_status'], test_size=0.25, random_state=42)
+    # X_train_lgd.to_csv('/home/ubuntu/X_train_lgd.csv')
+    # y_train_lgd.to_csv('/home/ubuntu/y_train_lgd.csv')
+    # X_test_lgd.to_csv('/home/ubuntu/X_test_lgd.csv')
+    # y_test_lgd.to_csv('/home/ubuntu/y_test_lgd.csv')
+    
     print('Mission Accomplished!!')
     

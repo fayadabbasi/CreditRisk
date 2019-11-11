@@ -76,42 +76,15 @@ class LGD:
 
     def action(self, loan_data_preprocessed, tr=0.5):
         
-        # will need to add back in recoveries and funded_amnt
-        loan_data_defaults['recoveries'] = pd.to_numeric(loan_data_defaults['recoveries'])
         loan_data_defaults['recovery_rate'] = loan_data_defaults['recoveries'] / loan_data_defaults['funded_amnt']
-        
         loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] > 1, 1, loan_data_defaults['recovery_rate'])
         loan_data_defaults['recovery_rate'] = np.where(loan_data_defaults['recovery_rate'] < 0, 0, loan_data_defaults['recovery_rate'])
-
-        # will need to add back in tot_rec_prncp
-        loan_data_defaults['tot_rec_prncp'] = pd.to_numeric(loan_data_defaults['total_rec_prncp'])
 
         loan_data_defaults['CCF'] = (loan_data_defaults['funded_amnt'].astype('float')) - loan_data_defaults['total_rec_prncp'].astype('float') / loan_data_defaults['funded_amnt'].astype('float')
 
         loan_data_defaults['recovery_rate_0_1'] = np.where(loan_data_defaults['recovery_rate'] == 0, 0, 1)
 
         lgd_inputs_stage_1_train, lgd_inputs_stage_1_test, lgd_targets_stage_1_train, lgd_targets_stage_1_test = train_test_split(loan_data_defaults.drop(['recovery_rate','recovery_rate_0_1', 'CCF'], axis = 1), loan_data_defaults['recovery_rate_0_1'], test_size = 0.2, random_state = 42)
-
-        def loan_data_d(dataframe, dlist):    
-            for items in dlist:
-                loan_data_dummies = [pd.get_dummies(dataframe[items], prefix=items,prefix_sep=':')]
-                loan_data_dummies = pd.concat(loan_data_dummies, axis=1)
-                dataframe = pd.concat([dataframe, loan_data_dummies], axis = 1)
-            return dataframe
-        
-    
-        lgd_inputs_stage_1_train = loan_data_d(lgd_inputs_stage_1_train, self.dummies)
-        lgd_inputs_stage_1_test = loan_data_d(lgd_inputs_stage_1_test, self.dummies)
-
-        lgd_inputs_stage_1_train = lgd_inputs_stage_1_train[features_all]
-        lgd_inputs_stage_1_train = lgd_inputs_stage_1_train.drop(features_reference_cat, axis = 1)
-
-        obj_conversion = ['dti','delinq_2yrs','inq_last_6mths','pub_rec','total_acc','acc_now_delinq']
-        
-        for items in obj_conversion:
-            lgd_inputs_stage_1_train[items] = pd.to_numeric(lgd_inputs_stage_1_train[items])
-        for items in obj_conversion:
-            lgd_inputs_stage_1_test[items] = pd.to_numeric(lgd_inputs_stage_1_test[items])
 
         reg_lgd_st_1 = LogisticRegression_with_p_values()
         reg_lgd_st_1.fit(lgd_inputs_stage_1_train, lgd_targets_stage_1_train)
