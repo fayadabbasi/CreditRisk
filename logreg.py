@@ -25,11 +25,7 @@ class LogReg:
         yhat_test = rg.predict(xte)
         yhat_test = pd.DataFrame(yhat_test)
 
-        smf = SelectFromModel(reg, threshold=-np.inf, max_features=10)
-        smf.fit(xtr, ytr)
-        feature_idx = smf.get_support()
-        feature_name = features.columns[feature_idx]
-
+        coef = rg.coef_
 
         yhat_test_proba = rg.predict_proba(xte)
         yhat_test_proba = pd.DataFrame(yhat_test_proba)
@@ -46,7 +42,7 @@ class LogReg:
         fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba'])
         auroc = roc_auc_score(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba'])
 
-        return df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, feature_name
+        return df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, coef
 
     
 
@@ -65,7 +61,7 @@ if __name__ == '__main__':
 
 
     lr = LogReg()
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, feature_name = lr.logreg_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1],tr=0.5, class_weight={0:1, 1:5})
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, coef = lr.logreg_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1],tr=0.5, class_weight={0:1, 1:5})
 
     print(df_actual_predicted_probs.shape)
     print(df_actual_predicted_probs.head(2))
@@ -73,4 +69,4 @@ if __name__ == '__main__':
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print(classification_report(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
-    print(feature_name)
+    print(coef[:10])

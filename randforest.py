@@ -49,11 +49,6 @@ if __name__ == '__main__':
     X_train_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'loan_amnt_factor'], axis=1, inplace=True)
     X_test_woe.drop(['Unnamed: 0.1', 'Unnamed: 0', 'loan_amnt_factor'], axis=1, inplace=True)
 
-    ###### NEED TO CHECK FOR THE UNNAMED COLUMN IN POSITION 1 ###############
-    ###### ALSO FOR THE RANDOM FOREST I NEED TO MAKE SURE I DO NOT DUMMIE EVERYTHING ########
-    
-    #### feature importance search
-
     r = RandFor()
     
     df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, features = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.17, class_weight={0:1, 1:20}, n_estimators=70, max_depth=None)
