@@ -6,6 +6,8 @@ from sklearn import linear_model
 import scipy.stats as stat
 from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.metrics import mean_squared_error, r2_score
+import CreditRisk.ohe as ohe
+import CreditRisk.woe as woe 
 
 features_all = []
 
@@ -72,16 +74,7 @@ class LGD:
     def __init__(self, dummies):
         self.dummies = ['grade','home_ownership','verification_status','purpose','initial_list_status']
 
-    def action(self, loan_data_preprocessed, tr=0.7):
-        
-        loan_data_defaults = loan_data_preprocessed[loan_data_preprocessed['loan_status'].isin(['Charged Off','Does not meet the credit policy. Status:Charged Off'])]
-
-        if 'mths_since_last_delinq' in loan_data_preprocessed:
-            loan_data_defaults['mths_since_last_delinq'].fillna(0, inplace = True)
-        
-
-        if 'mths_since_last_record' in loan_data_preprocessed:
-            loan_data_defaults['mths_since_last_record'].fillna(0, inplace=True)
+    def action(self, loan_data_preprocessed, tr=0.5):
         
         # will need to add back in recoveries and funded_amnt
         loan_data_defaults['recoveries'] = pd.to_numeric(loan_data_defaults['recoveries'])
@@ -202,8 +195,8 @@ if __name__ == '__main__':
     
     ####### I can concatenate df_preprocessed with the X_train_woe_tt_cat or something like that #######
 
-    
-        
+
+
     pd.crosstab(df_actual_predicted_probs['lgd_targets_stage_1_test'], df_actual_predicted_probs['y_hat_test_lgd_stage_1'], rownames = ['Actual'], colnames = ['Predicted'])
     print(auroc)
     # from the second action
