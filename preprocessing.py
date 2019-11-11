@@ -106,6 +106,7 @@ class Preprocessing:
             dataframe[items].fillna(0, inplace=True)
         
         dataframe_lgd = dataframe[['recoveries', 'funded_amnt','total_rec_prncp', 'loan_status']]
+        dataframe_lgd = dataframe_lgd[dataframe_lgd['loan_status']!='Current']
         dataframe_current = dataframe[dataframe['loan_status']=='Current']
         dataframe = dataframe[dataframe['loan_status']!='Current']
         dataframe.drop(['recoveries', 'total_rec_prncp'], axis=1, inplace=True)
