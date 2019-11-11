@@ -17,7 +17,7 @@ class LogReg:
     def logreg_action(self, xtr, xte, ytr, yte, tr=0.5, class_weight={0:10, 1:1}):
         '''
         perform logistic regression fit and prediction and output key variables
-        OUTPUT: df_actual_predicted_probs, fpr, trp, thresholds, auroc, and score
+        OUTPUT: df_actual_predicted_probs, fpr, trp, thresholds, auroc, score, coef
         '''
         
         reg = LogisticRegression(class_weight=class_weight)
@@ -25,7 +25,14 @@ class LogReg:
         yhat_test = rg.predict(xte)
         yhat_test = pd.DataFrame(yhat_test)
 
-        coef = rg.coef_
+        feature_name = xtr.columns.values
+        summary_table = pd.DataFrame(columns = ['Feature name'], data = feature_name)
+        summary_table['Coefficients'] = np.transpose(rg.coef_)
+        summary_table.index = summary_table.index + 1
+        summary_table.loc[0] = ['Intercept', rg.intercept_[0]]
+        summary_table = summary_table.sort_index()
+        
+        coef = summary_table
 
         yhat_test_proba = rg.predict_proba(xte)
         yhat_test_proba = pd.DataFrame(yhat_test_proba)
@@ -69,4 +76,4 @@ if __name__ == '__main__':
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print(classification_report(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
-    print(coef[:10])
+    print(coef[:10,:])
