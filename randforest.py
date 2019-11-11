@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     r = RandFor()
     
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.2, class_weight={0:1, 1:10}, n_estimators=70, max_depth=None)
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.5, class_weight={0:1, 1:10}, n_estimators=70, max_depth=None)
     
     print("The random forest classifier score is is: {:3%}".format(score))
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
