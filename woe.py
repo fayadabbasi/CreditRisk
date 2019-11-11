@@ -302,14 +302,6 @@ class WOE:
             df_inputs_prepr['total_rec_late_fee_factor:3'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(15,30))),1,0)
             df_inputs_prepr['total_rec_late_fee_factor:4'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(30,int(df_inputs_prepr['total_rec_late_fee'].max())))),1,0)
             df_inputs_prepr = df_inputs_prepr.drop(['total_rec_late_fee', 'total_rec_late_fee_factor'], axis=1)
-        
-        if 'loan_amnt' in X_train:
-            df_inputs_prepr['total_rec_late_fee_factor'] = pd.cut(df_inputs_prepr['total_rec_late_fee'],8)
-            df_inputs_prepr['total_rec_late_fee_factor:1'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(1))),1,0)
-            df_inputs_prepr['total_rec_late_fee_factor:2'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(1,15))),1,0)
-            df_inputs_prepr['total_rec_late_fee_factor:3'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(15,30))),1,0)
-            df_inputs_prepr['total_rec_late_fee_factor:4'] = np.where((df_inputs_prepr['total_rec_late_fee'].isin(range(30,int(df_inputs_prepr['total_rec_late_fee'].max())))),1,0)
-            df_inputs_prepr = df_inputs_prepr.drop(['total_rec_late_fee', 'total_rec_late_fee_factor'], axis=1)
 
         if 'acc_now_delinq' in X_train:
             df_inputs_prepr['acc_now_delinq_factor'] = pd.cut(df_inputs_prepr['acc_now_delinq'],8)
