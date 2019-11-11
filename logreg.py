@@ -45,11 +45,7 @@ class LogReg:
 
 
 if __name__ == '__main__':
-    
-    # X_train_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_train_woe_tt.csv')
-    # X_test_woe = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/X_test_woe_tt.csv')
-    # y_train = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_train_tt.csv', header=None)
-    # y_test = pd.read_csv('/Users/fayadabbasi/Desktop/Python_Scripts/Galvanize/DSI/CreditRisk/y_test_tt.csv', header=None)
+
 
     X_train_woe = pd.read_csv('/home/ubuntu/X_train_woe_tt.csv')
     X_test_woe = pd.read_csv('/home/ubuntu/X_test_woe_tt.csv')

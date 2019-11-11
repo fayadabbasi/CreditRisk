@@ -18,23 +18,25 @@ class RandFor:
         y_glb = ytr
 
         r = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, class_weight=class_weight, random_state=42, n_jobs=-1)
-        rfit = r.fit(xtr, y_glb)
+        r.fit(xtr, y_glb)
 
-        yhat_test = rfit.predict_proba(xte)
+        yhat_test = r.predict_proba(xte)
         yhat_test = pd.DataFrame(yhat_test) 
 
         df_actual_predicted_probs = pd.concat([yte, yhat_test.iloc[:,1]], axis=1)
         df_actual_predicted_probs.columns = ['y_test','yhat_test']
         df_actual_predicted_probs.index = xte.index
 
-        score = rfit.score(xtr, y_glb)
+        score = r.score(xtr, y_glb)
+
+        features = pd.DataFrame(r.feature_importances_,index = xtr.columns, columns=['importance']).sort_values('importance',ascending=False)
 
         df_actual_predicted_probs['yhat_test_proba'] = np.where(df_actual_predicted_probs['yhat_test'] > tr, 1, 0)
 
         fpr, tpr, thresholds = roc_curve(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test'])
         auroc = roc_auc_score(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test'])
 
-        return df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score
+        return df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, features
 
 
 if __name__ == '__main__':
@@ -54,7 +56,7 @@ if __name__ == '__main__':
 
     r = RandFor()
     
-    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.17, class_weight={0:1, 1:20}, n_estimators=70, max_depth=None)
+    df_actual_predicted_probs, fpr, tpr, thresholds, auroc, score, features = r.randfor_action(X_train_woe, X_test_woe, y_train.iloc[:,1], y_test.iloc[:,1], tr=0.17, class_weight={0:1, 1:20}, n_estimators=70, max_depth=None)
     
     print("The random forest classifier score is is: {:3%}".format(score))
     print(confusion_matrix(df_actual_predicted_probs['y_test'], df_actual_predicted_probs['yhat_test_proba']))
