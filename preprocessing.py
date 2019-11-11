@@ -137,10 +137,10 @@ if __name__ == '__main__':
 
     # current.to_csv('/home/ubuntu/current.csv')
     X_train_lgd, X_test_lgd, y_train_lgd, y_test_lgd = tts(lgd.drop(['loan_status'], axis=1), lgd['loan_status'], test_size=0.25, random_state=42)
-    # X_train_lgd.to_csv('/home/ubuntu/X_train_lgd.csv')
-    # y_train_lgd.to_csv('/home/ubuntu/y_train_lgd.csv')
-    # X_test_lgd.to_csv('/home/ubuntu/X_test_lgd.csv')
-    # y_test_lgd.to_csv('/home/ubuntu/y_test_lgd.csv')
+    X_train_lgd.to_csv('/home/ubuntu/X_train_lgd.csv')
+    y_train_lgd.to_csv('/home/ubuntu/y_train_lgd.csv')
+    X_test_lgd.to_csv('/home/ubuntu/X_test_lgd.csv')
+    y_test_lgd.to_csv('/home/ubuntu/y_test_lgd.csv')
     
     print('Mission Accomplished!!')
     
