@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np   
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import roc_curve, roc_auc_score
+import pickle
 
 class RandFor:
 
@@ -59,7 +60,9 @@ if __name__ == '__main__':
     print("The Area Under the Curve for the ROC is: {:3f}".format(auroc))
     print(features.head(10))
 
-    model_rf.to_csv('/home/ubuntu/rfit.csv')
+    filename = 'finalized_model.sav'
+    pickle.dump(rfit, open(filename, 'wb'))
+    
     
 
 
