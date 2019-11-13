@@ -39,6 +39,13 @@ Below is a simple breakdown of the total loans in the dataset.
 
 Again, for my modeling, I will exclude "Current" loans since I want to apply the model to the "Current" data set after getting a result. That leaves "Fully Paid" as my good loan bucket and all others as bad loans. I will ignore the "Does not meet the credit policy" groupings.  
 
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/Loan_Counts.png)
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/Distribution_of_Loans_by_Grade.png)
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/Loan_Count_by_Amount.png)
+
+![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/Loan_Count_by_IR.png)
 
 
 ## Critera
