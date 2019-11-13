@@ -6,21 +6,18 @@ Lending Club is a peer to peer lending platform that emerged in 2007. The platfo
 
 For my project, I have looked at Lending Club data from 2007 through Q2 2019. In total, there are 2,384,781 entries and a total of 150 features. While many categories have incomplete data, most of the relevant categories appear to have pretty thorough details about the loans. 
 
-_While the scope of this project was just on identifying good versus bad loans, I would like to also apply the loan score with the associated interest rate to identify how to maximize yield._ 
+_While the scope of this project was just on identifying good versus bad loans, I would like to also apply the loan score with the associated interest rate and specifically the higher interest rate segment to identify how to maximize yield._ 
 
 ## Objective
 
-For my project, I am looking to select some features from the dataset and see if I can build a model to predict if a loan is considered a good loan or a bad loan. I have defined good loans as Fully Paid or Current while bad loans are defined as all other categories. 
+For my project, I am looking to select some features from the dataset and see if I can build a model to predict if a loan is considered a good loan or a bad loan. I have defined good loans as Fully Paid while bad loans are defined as all other categories. 
 
-For the dataset, good loans accounted for 86% of the total dataset while bad loans were 14%. Of the bad loans, 88% were charged off. 
+For the dataset, good loans accounted for 78% of the total dataset while bad loans were 22%.  
 
-I will one hot encode two different sets of data: my first set is based on 10 criteria that I feel could be good predictors and the second set is based on an additional 13 criteria. The criteria are listed below with a brief description. 
+I will run two separate experiments - one using a logistic regression model to establish a baseline for the test. Since logistic regression is commonly used in the banking industry, I feel this should be the benchmark for my test. Then, I will try to improve on the performance of the model by using a random forest classifier to identify good versus bad loans. 
 
-I begin by applying a logistic regression model. I will split my dataset into a train/test split (75%/25%) and then train the model on the one hot encoded data. From that, I will test against the test dataset and see what my area under curve is for my ROC curve. 
-
-I will then do the same with a random forest, one test on a default class weighting and a second over-weighting the bad loans. I am using n_estimators at 100 and no max depth to allow the trees to grow fully. For the class weighted, I am using a 10:1 weighting for bad:good to better represent the bad loan category. 
-
-Finally I will run a gradient boosted test. For the boosted model, I am using a learning rate of 0.001, n_estimators of 300, and max depth of 2. In the future, I can apply more tuning to this model, potentially including multiple models on an EC2 instance to better determine optimal hyper parameters. As it is, with the parameters I chose, given the large dataset, it takes roughly 20min to train the gradient boosted model. 
+Throughout this process, my goal is not just to get the highest accuracy of score but also minimize the false positive predictions (where I predict a loan to be good but it turns out to be bad). I will target a 5% threshold for both models, the logistic regression and the random forest. The better classifier should provide more recommended good loans and that will be the basis for my application to the Current set of loans. 
+ 
 
 ## Loan Characteristics
 
@@ -40,234 +37,61 @@ Below is a simple breakdown of the total loans in the dataset.
 | Default                                             |        42       | 0%      | 
 | Total                                               | 2,384,781       | 100%    | 
 
+Again, for my modeling, I will exclude "Current" loans since I want to apply the model to the "Current" data set after getting a result. That leaves "Fully Paid" as my good loan bucket and all others as bad loans. I will ignore the "Does not meet the credit policy" groupings.  
 
 ## Critera
 
-Loan critera used with the first ten being used on the first pass and the remaining three added on the second pass: 
+I have used nearly 40 criteria for my model before any of the data preprocessing. These include:
+ 
+Funded Amount, Funded Amount, Investment, Installment, Debt to Income (DTI), Delinquencies in past 2 years, FICO range, Inquiries in past 6 months, number of Public derogatory Records, Revolver Balance, Accounts Now Delinquent, Chargeoffs in the past 12 months, Tax Liens, Employment Length, Term of the Loan, Grade (provided by Lending Club) and Sub-Grade, Home Ownership Status, Verification Status, Purpose of the Loan, Initial Listing Status, Address State, Loan Amount, Annual Income (self-reported), Interest Rate, Revolver Utilization, Open Accounts, Zip Code, Public Record of Bankruptcies, All debt Utilization, Collections in the past 12 months excluding medical, Delinquent Amount, Number of Personal Finance Inquiries, Months since last Delinquency, Num of accounts over 120 days past due, number of active revolver trades, number of revolving accounts, total recorded late fees. 
 
-|                |                                                                                                                    | 
-|----------------|--------------------------------------------------------------------------------------------------------------------| 
-| Category       | Description                                                                                                        | 
-| loan amnt      | Listed amount of loan applied for by the borrower                                                                  | 
-| grade          | Lending Club assigned loan grade                                                                                   | 
-| emp length     | Employment length in years, between 0 and 10                                                                       | 
-| annual inc     | Self reported annual income provided by the borrower                                                               | 
-| purpose        | A category provided by the borrower for the loan request                                                           | 
-| revol util     | Revolving line utilization rate or amount of credit the borrower is using vs total available revolving credit line | 
-| home ownership | Home ownership status provided by the borrower                                                                     | 
-| term           | Number of payments on the loan. Either 36 or 60 months                                                             | 
-| int rate       | Interest rate on the loan                                                                                          | 
-| loan status    | Current status of loan - this is used for the target                                                               | 
-| open acc       | Number of open credit lines in the borrower's credit file                                                          | 
-| zip code       | The first three numbers of the user zipcode                                                                        | 
-| tot cur bal    | Total current balance of all accounts  
+Future tests could include adding more features depending on information gain from each additional feature addition. 
 
 ## Process
 
-I first performed some exploration of the dataset. While I initially tried evaluating the entire 150 feature dataset, I narrowed the scope to the above mentioned criteria. I wrote a function to handle all the preprocessing. For null values, I evaluated what the best way to handle each would be - in the case of annual income, for instance, I imputed the mean annual income while for current balance, I imputed a zero value for missing data. 
+I first performed some exploration of the dataset. While I initially tried evaluating the entire 150 feature dataset, I narrowed the scope to the above mentioned criteria. I wrote a function to handle all the preprocessing, which can be found here: https://github.com/fayadabbasi/CreditRisk/blob/master/preprocessing.py
 
-Next, I one hot encoded all categorical values. This included: grade, home ownership, purpose, employment length, and term of the loan. 
+For null values, I evaluated what the best way to handle each would be - in the case of annual income, for instance, I imputed the mean annual income while for current balance, I imputed a zero value for missing data. 
 
-I next created a weight of evidence table for the continuous variables remaining. Weight of evidence is a standard methodology used in the credit industry. Weight of evidence is the log of % good divided by log % bad. By binning the continuous variables and then bucketing them based on their weight of evidence score, I can create relevant binary categories for each feature. For example, by evaluating a number of bin quantities for interest rate (ranging from 20 to 300), I can determine where I get a reasonable breakdown of counts and clustering of weight of evidence scores. If I determine that there is a large clustering of weight of evidence between 10% and 17% interest rate but then see a spike up, I can bin all rates between 10 and 17% together and create a separate bin for the next cluster. 
+Next, I one hot encoded all categorical values. This included: grade and sub grade, home ownership,  verification status, purpose, initial list status, address state, term of loan, employment length. https://github.com/fayadabbasi/CreditRisk/blob/master/ohe.py
 
-I did this for the following categories: loan amount, annual income, interest rate, revolver utilization, open credit (open acc), first three digits of zip code, and total current balance. 
+I next created a weight of evidence table for the continuous variables. Weight of evidence is a standard methodology used in the credit industry. Weight of evidence is the log of % good divided by log % bad. By binning the continuous variables and then bucketing them based on their weight of evidence score or information value, I can create relevant binary categories for each feature. This is useful for the logisitc regression model. https://github.com/fayadabbasi/CreditRisk/blob/master/woe.py
 
-After completing this process, I had 98 categories to evaluate on, all of which were one hot encoded. 
+For example, by evaluating a number of bin quantities for interest rate (ranging from 20 to 300), I can determine where I get a reasonable breakdown of counts and clustering of weight of evidence scores. If I determine that there is a large clustering of weight of evidence between 10% and 17% interest rate but then see a spike up, I can bin all rates between 10 and 17% together and create a separate bin for the next cluster. It is important to verify that the binning is consistent between the training and test data sets. 
+
+As a side note, this is a very labor intensive process and something I can look to automate in the future.  
+
+After completing this process, I had 167 categories to evaluate on for my logistic regression model and 96 categories for my random forest model. The random forest model retained the continuous variables so that the model can determine where to split the trees.  
+
+## Hyperparameter tuning
+
+For the logistic regression, the model was pretty straight forward - I did adjust for the class weightings by overweighting bad loans by a factor of 5. https://github.com/fayadabbasi/CreditRisk/blob/master/logreg.py
+
+I did a feature search on my random forest model and landed on the following settings - class weighting of 20:1 for bad versus good loans, 70 estimators, no max depth, and a threshold of 0.17. There may be opportunities to further refine these parameters as well. https://github.com/fayadabbasi/CreditRisk/blob/master/randforest.py
 
 ## Results of Model
 
-### Logistic Regression Model
-AUROC - 0.6999 using 10 features and 0.7016 using 13 features. 
-_Note: I will show data going forward only with 13 features_ 
+Since I optimized on a 5% false positive rate for the two models, the benchmark for determining the quality of the two models was the number of good loan predictions. I did this for a couple of reasons: 
 
-![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Logistic_Regression_13_factors.png)
+1. A pure accuracy score would not be helpful for such an imbalanced class. As I was working through the modeling of this dataset, the tradeoff's I faced were related to the number of correctly predicted good loans versus the total number of loans available. 
 
-**Confusion Matrix - Threshold of 0.5 and 13 features**
+2. Still, I was able to generate 7,000 more good loan predictions from the random forest model compared to the logistic regression model, or 175,000 overall versus 168,000. While a small percentage improvement, the dollar impact, assuming $100 invested per loan, improves the total investment opportunity by $700,000. Continued feature engineering and model refinement could further increase the predictions of the random forest model. 
 
-|           |      |         | 
-|-----------|------|---------| 
-| Predicted |  0   | 1       | 
-| Actual    |      |         | 
-| 0         |  769 | 74,985  | 
-| 1         |  852 | 502,021 | 
-|           | 1,621| 577,006 |
+3. The random forest model had an AUCROC of 0.73 compared to 0.67 for the logistic regression model, while maintaining similar recall scores on bad loans of about 0.75. 
 
-**Classification Report - Threshold of 0.5 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.47      | 0.01   | 0.02      | 75,754   | 
-| 1         | 0.87      | 1      | 0.93      | 502,873  | 
-| avg/total | 0.82      | 0.87   | 0.81      | 578,627  | 
-
-
-**Confusion Matrix - Threshold of 0.7 and 13 features**
-
-|           |        |         | 
-|-----------|--------|---------| 
-| Predicted | 0      | 1       | 
-| Actual    |        |         | 
-| 0         | 12,650 | 63,104  | 
-| 1         | 22,380 | 480,493 | 
-|           | 35,030 | 543,597 | 
-
-**Classification Report - Threshold of 0.7 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.36      | 0.17   | 0.23      | 75,754   | 
-| 1         | 0.88      | 0.96   | 0.92      | 502,873  | 
-| avg/total | 0.82      | 0.85   | 0.83      | 578,627  | 
-
-
-
-#### Comments
-
-The logistic regression model turned out to have the best AUCROC score of all the models I used. That said, just using 0.5 for the logistic regression threshold, I did not see good performance on the recall of the model. The model largely defaulted to scoring almost everthing as a good loan, as evidenced by predicting only 0.28% of all loans as bad versus actual of 13.1%. Incidentally, using a threshold of 0.50 for all four models resulted in very low recall scores for all but the models, with bad loan recalls ranging from 0.0% to 0.4%. By increasing the threshold to 0.7, I get a better balance, as seen by the prediction increasing to 6.05% 
-
-### Random Forest - Default Class Weighting
-AUROC - 0.667 using 13 features. 
-
-![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_13_features.png)
-
-**Confusion Matrix - Threshold of 0.5 and 13 features**
-
-|           |       |         | 
-|-----------|-------|---------| 
-| Predicted | 0     | 1       | 
-| Actual    |       |         | 
-| 0         | 1,595 | 74,159  | 
-| 1         | 2,729 | 500,144 | 
-|           | 4,324 | 574,303 | 
-
-**Classification Report - Threshold of 0.5 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.37      | 0.02   | 0.04      | 75,754   | 
-| 1         | 0.87      | 0.99   | 0.93      | 502,873  | 
-| avg/total | 0.81      | 0.87   | 0.81      | 578,627  | 
-
-**Confusion Matrix - Threshold of 0.7 and 13 features**
-
-|           |        |         | 
-|-----------|--------|---------| 
-| Predicted | 0      | 1       | 
-| Actual    |        |         | 
-| 0         | 15,877 | 59,877  | 
-| 1         | 39,081 | 463,792 | 
-|           | 54,958 | 523,669 | 
-
-
-**Classification Report - Threshold of 0.7 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.29      | 0.21   | 0.24      | 75,754   | 
-| 1         | 0.89      | 0.92   | 0.9       | 502,873  | 
-| avg/total | 0.81      | 0.83   | 0.82      | 578,627  | 
-
-
-
-While the AUROC score is lower, the basic threshold evaluation of the Random Forest model captures more of the actual bad loans although still pretty poor. Predicting 2% of actual bad loans, as evidenced by the recall score, is not too helpful and barely better than 1% from the logistic regression model. At 0.7 threshold, I capture 21% of the actual bad loans. 
-
-### Random Forest with 10:1 class weighting bad:good
-AUROC at 0.6485 for 13 features
-
-![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_RF_w_10-1_Class_Weighting_13_features.png)
-
-**Confusion Matrix - Threshold of 0.5 and 13 features**
-
-|           |        |         | 
-|-----------|--------|---------| 
-| Predicted | 0      | 1       | 
-| Actual    |        |         | 
-| 0         | 2,731  | 73,023  | 
-| 1         | 7,493  | 495,380 | 
-|           | 10,224 | 568,403 | 
-
-
-**Classification Report - Threshold of 0.5 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.27      | 0.04   | 0.06      | 75,754   | 
-| 1         | 0.87      | 0.99   | 0.92      | 502,873  | 
-| avg/total | 0.79      | 0.86   | 0.81      | 578,627  | 
-
-
-
-**Confusion Matrix - Threshold of 0.7 and 13 features**
-
-|           |        |         | 
-|-----------|--------|---------| 
-| Predicted | 0      | 1       | 
-| Actual    |        |         | 
-| 0         | 18,340 | 57,414  | 
-| 1         | 60,261 | 442,612 | 
-|           | 78,601 | 500,026 | 
-
-
-**Classification Report - Threshold of 0.7 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-| x         | Precision | Recall | f-1 score | support  | 
-| 0         | 0.23      | 0.24   | 0.24      | 75,754   | 
-| 1         | 0.89      | 0.88   | 0.88      | 502,873  | 
-| avg/total | 0.80      | 0.80   | 0.80      | 578,627  | 
-
-
-
-#### Comments 
-
-Again, there is a similar theme - as we try to improve prediction of bad loans, we inevitable see a trade-off on opportunity cost. Looking at the confusion matrix, for 0.7 threshold on the random forest imbalance, I have lowered my false positives but dramatically increased my true negatives. My combined f-1 scores also seem to be in the 0.80-0.83 range through all the reports so far. 
-
-### Gradient Boosted Model
-AUROC score of 0.6765
-
-![alt text](https://github.com/fayadabbasi/CreditRisk/blob/master/ROC_Images/ROC_Gradient_Boosted_13_feature.png)
-
-**Confusion Matrix - Threshold of 0.5 and 13 features**
-
-|           |        |         | 
-|-----------|--------|---------| 
-| Predicted | 0      | 1       | 
-| Actual    |        |         | 
-| 0         |      0 | 75,754  | 
-| 1         |      0 | 502,873 | 
-|           |      0 | 578,627 | 
-
-
-**Classification Report - Threshold of 0.5 and 13 features**
-
-|           |           |        |           |          | 
-|-----------|-----------|--------|-----------|----------| 
-|           | Precision | Recall | f-1 score | support  | 
-| 0         | 0.00      | 0.00   | 0.00      | 75,754   | 
-| 1         | 0.87      | 1.00   | 0.93      | 502,873  | 
-| avg/total | 0.76      | 0.87   | 0.81      | 578,627  | 
-
-
-
-#### Comments
-
-Well, why not... The gradient boosted model clearly needs some additional parameter tuning. Given the time it takes to run the model, it will probably be best to leverage some faster processing capacity with AWS EC2. 
+4. The top five feature importance criteria of the random forest model were: interest rate, debt to income, revolver balance, zip code, and revolver utilization. 
 
 ## Conclusions
 
-Overall, this is not going to make you rich. The models appear to struggle to capture actual bad loans by defaulting to optimizing the number of good loans. 
+There are many factors to consider from this test. First, we are analyzing historical performance from 2007 - Q2 2019, which includes one of the strongest period of economic growth and low relative interest rates in the economy in the past century. As such, a decline in economic factors could have a material impact on the previous range of data analyzed. 
+
+Second, a net 12.4% return using the random forest model compared to a straight average return of 17.4% for the S&P 500 over the same time frame is not a compelling investment opportunity. One of the next steps to consider is identifying characteristics of the lower grade / higher interest rate segment of the portfolio to improve on the net return while minimizing predicted bad loans. 
+
+Third, The net yield of 12.4% is still better than the net yield of about 11% for the overall lending club portfolio so the model has added 140 basis points of value. Again, further refinements can lead to greater investment return opportunities. 
 
 **Areas to consider for future iterations:**
 
-* The additional of 3 features had minimal impact on the logistic regression model but perhaps other features could result in better enhancements. 
+* Now that I have a foundational model, future exploration of the dataset can focus on the higher interest rate segment of the portfolio. This will give me an opportunity to fine tune and drive for higher yield in the more lucrative segment of the portofolio. 
 
-* Running the non categorical data directly on the random forest and gradient boosted models may allow the models to determine better splits and thus better predictability than the one hot encoded solutions I fed into the models. 
-
-* Perform GridSearch to try to optimize for lower recall on bad loans. Definitely an opportunity to work on improving on hyperparameters for the gradient boosted model. The inital pass was pretty disappointing but I think with some work it can be dramatically improved. 
+* Build a Flask interface to allow the model to update every quarter as Lending Club updates their loan listings and rerun the model as older loans move from Current status to Fully Paid or other status.
 
