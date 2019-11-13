@@ -39,6 +39,8 @@ Below is a simple breakdown of the total loans in the dataset.
 
 Again, for my modeling, I will exclude "Current" loans since I want to apply the model to the "Current" data set after getting a result. That leaves "Fully Paid" as my good loan bucket and all others as bad loans. I will ignore the "Does not meet the credit policy" groupings.  
 
+
+
 ## Critera
 
 I have used nearly 40 criteria for my model before any of the data preprocessing. These include:
